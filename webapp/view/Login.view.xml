@@ -1,0 +1,100 @@
+<mvc:View
+    controllerName="purchaseordertracking.zpomanagementapp.controller.Login"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:f="sap.f"
+    xmlns:core="sap.ui.core"
+    displayBlock="true"
+>
+    <!-- Background Container with Fiori Styling -->
+    <FlexBox
+        height="100%"
+        width="100%"
+        alignItems="Center"
+        justifyContent="Center"
+        class="sapUiContentPadding sapUiResponsivePadding"
+    >
+        <!-- Card Container for Login Box -->
+        <f:Card width="380px">
+            <f:header>
+                <card:Header
+                    xmlns:card="sap.f.cards"
+                    title="Purchase Order Tracking"
+                    subtitle="Sign in to your account"
+                    iconSrc="sap-icon://supplier"
+                />
+            </f:header>
+
+            <f:content>
+                <VBox
+                    class="sapUiMediumMargin"
+                    justifyContent="Center"
+                >
+                    <MessageStrip
+                        id="loginErrorMessage"
+                        type="Error"
+                        visible="false"
+                        showIcon="true"
+                        class="sapUiSmallMarginBottom"
+                    />
+
+                    <!-- User Credentials Form -->
+                    <Label
+                        text="Username / User ID"
+                        required="true"
+                    />
+                    <Input
+                        id="usernameInput"
+                        placeholder="Enter your user ID"
+                        valueLiveUpdate="true"
+                        submit=".onLogin"
+                        class="sapUiSmallMarginBottom"
+                    >
+                        <layoutData>
+                            <FlexItemData growFactor="1" />
+                        </layoutData>
+                    </Input>
+
+                    <Label
+                        text="Password"
+                        required="true"
+                    />
+                    <Input
+                        id="passwordInput"
+                        type="Password"
+                        placeholder="Enter your password"
+                        valueLiveUpdate="true"
+                        submit=".onLogin"
+                        class="sapUiMediumMarginBottom"
+                    />
+
+                    <!-- Primary Action -->
+                    <Button
+                        id="btnLogin"
+                        text="Sign In"
+                        type="Emphasized"
+                        press=".onLogin"
+                        width="100%"
+                        icon="sap-icon://log"
+                        class="sapUiSmallMarginBottom"
+                    />
+
+                    <!-- Secondary Links -->
+                    <FlexBox
+                        justifyContent="SpaceBetween"
+                        alignItems="Center"
+                    >
+                        <Link
+                            text="Forgot Password?"
+                            press=".onForgotPassword"
+                        />
+                        <Text
+                            text="v1.0.0"
+                            class="sapUiTinyMarginTop"
+                        />
+                    </FlexBox>
+                </VBox>
+            </f:content>
+        </f:Card>
+    </FlexBox>
+</mvc:View>

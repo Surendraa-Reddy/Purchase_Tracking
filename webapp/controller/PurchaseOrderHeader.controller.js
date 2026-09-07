@@ -12,14 +12,14 @@ sap.ui.define([
         onSearch: function () {
             var aFilters = [];
 
-            
+
             var sPoId = this.byId("filterPoId").getValue().trim();
             var sVendor = this.byId("filterVendor").getValue().trim();
             var sStatus = this.byId("filterStatus").getSelectedKey();
 
 
             if (sPoId) {
-                aFilters.push(new Filter("PoId", FilterOperator.Contains, sPoId));
+                aFilters.push(new sap.ui.model.Filter("PoId", sap.ui.model.FilterOperator.Contains, sQuery));
             }
 
 
@@ -49,21 +49,21 @@ sap.ui.define([
         },
 
         onRefresh: function () {
-    
+
             this.byId("filterPoId").setValue("");
             this.byId("filterVendor").setValue("");
             this.byId("filterStatus").setSelectedKey("");
 
-           
+
             var oTable = this.byId("managePoTable");
             var oBinding = oTable.getBinding("items");
 
             if (oBinding) {
                 oBinding.filter([]);
-                oBinding.refresh();  
+                oBinding.refresh();
             }
 
-            
+
             MessageToast.show("Search fields cleared and data refreshed.");
         },
 
@@ -94,11 +94,15 @@ sap.ui.define([
             var oContext = oSelectedItem.getBindingContext();
             var sPoId = oContext.getProperty("PoId");
 
-          
+
             var oRouter = this.getOwnerComponent().getRouter();
             oRouter.navTo("Poitems", {
                 poId: sPoId
             });
+        },
+        onNavToDashboard: function () {
+            var oRouter = this.getOwnerComponent().getRouter();
+            oRouter.navTo("Dashboard");
         }
     });
 });

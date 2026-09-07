@@ -12,20 +12,30 @@
         headerExpanded="true"
         fitContent="true"
     >
-        <!-- Page Header Title -->
         <f:title>
             <f:DynamicPageTitle>
                 <f:heading>
-                    <Title
-                        text="Manage Purchase Orders"
-                        level="H2"
-                    />
+                    <!-- Use OverflowToolbar to align back button directly before title -->
+                    <OverflowToolbar style="Clear">
+                        <Button
+                            icon="sap-icon://nav-back"
+                            type="Transparent"
+                            press=".onNavToDashboard"
+                            tooltip="Navigate to Dashboard"
+                        />
+                        <Title
+                            text="Manage Purchase Orders"
+                            level="H2"
+                        />
+                    </OverflowToolbar>
                 </f:heading>
+
                 <f:snappedContent>
                     <Text
                         text="Filter, create, and manage system purchase orders"
                     />
                 </f:snappedContent>
+
                 <f:actions>
                     <Button
                         text="Create PO"

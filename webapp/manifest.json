@@ -88,8 +88,15 @@
       },
       "routes": [
         {
-          "name": "Dashboard",
+          "name": "Login",
           "pattern": "",
+          "target": [
+            "Login"
+          ]
+        },
+        {
+          "name": "Dashboard",
+          "pattern": "Dashboard",
           "target": [
             "Dashboard"
           ]
@@ -103,13 +110,18 @@
         },
         {
           "name": "Poitems",
-          "pattern": "POHeaderSet/{poId}",
+          "pattern": "PurchaseOrderHeader/{poId}",
           "target": [
             "Poitems"
           ]
         }
       ],
       "targets": {
+        "Login": {
+          "viewType": "XML",
+          "transition": "show",
+          "viewName": "Login"
+        },
         "PurchaseOrderHeader": {
           "viewType": "XML",
           "transition": "slide",

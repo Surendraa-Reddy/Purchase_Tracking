@@ -202,7 +202,6 @@
                     </Panel>
                 </layout:Grid>
 
-                <!-- QUICK NAVIGATION / RECENT PO TILES -->
                 <Panel headerText="Recent Orders Quick Launchpad">
                     <headerToolbar>
                         <OverflowToolbar style="Clear">
@@ -219,27 +218,50 @@
                         </OverflowToolbar>
                     </headerToolbar>
 
-                    <HBox
-                        id="recentCardsBox"
-                        wrap="Wrap"
+                    <Table
+                        id="recentPOTable"
                         items="{/POHeaderSet}"
+                        growing="true"
+                        growingThreshold="10"
+                        mode="SingleSelectMaster"
+                        itemPress=".onPOTableRowPress"
                     >
-                        <GenericTile
-                            header="PO {PoId}"
-                            subheader="Vendor: {VendorId}"
-                            frameType="TwoByOne"
-                            press=".onPOCardPress"
-                            class="sapUiTinyMarginEnd sapUiTinyMarginBottom"
-                        >
-                            <TileContent footer="{Status}">
-                                <NumericContent
-                                    value="{TotalAmount}"
-                                    scale=""
-                                    valueColor="{= ${Status} === 'OPEN' ? 'Critical' : ${Status} === 'COMPLETED' ? 'Good' : 'Neutral'}"
-                                />
-                            </TileContent>
-                        </GenericTile>
-                    </HBox>
+                        <columns>
+                            <Column hAlign="Left">
+                                <Text text="PO Number" />
+                            </Column>
+                            <Column hAlign="Left">
+                                <Text text="Vendor" />
+                            </Column>
+                            <Column hAlign="Right">
+                                <Text text="Total Amount" />
+                            </Column>
+                            <Column hAlign="Center">
+                                <Text text="Status" />
+                            </Column>
+                        </columns>
+                        <items>
+                            <ColumnListItem
+                                type="Navigation"
+                                press=".onPOTableRowPress"
+                            >
+                                <cells>
+                                    <ObjectIdentifier title="{PoId}" />
+                                    <Text text="{VendorId}" />
+
+                                    <ObjectNumber
+                                        number="{TotalAmount}"
+                                        state="{= ${Status} === 'OPEN' ? 'Warning' : ${Status} === 'COMPLETED' ? 'Success' : 'None'}"
+                                    />
+
+                                    <ObjectStatus
+                                        text="{Status}"
+                                        state="{= ${Status} === 'OPEN' ? 'Warning' : ${Status} === 'COMPLETED' ? 'Success' : 'None'}"
+                                    />
+                                </cells>
+                            </ColumnListItem>
+                        </items>
+                    </Table>
                 </Panel>
             </VBox>
         </f:content>

@@ -58,7 +58,7 @@ sap.ui.define([
             } else {
                 var oRouter = UIComponent.getRouterFor(this);
                 if (oRouter) {
-                    oRouter.navTo("RoutePurchaseOrderHeader", {}, true);
+                    oRouter.navTo("PurchaseOrderHeader", {}, true);
                 }
             }
         }

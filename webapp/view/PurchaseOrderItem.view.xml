@@ -77,7 +77,7 @@
                 wrap="Wrap"
                 fitContainer="true"
                 alignItems="Stretch"
-                justify="SpaceBetween"
+                justifyContent="SpaceBetween"
             >
                 <GenericTile
                     class="sapUiTinyMarginEnd sapUiTinyMarginBottom"
@@ -87,9 +87,8 @@
                     <TileContent>
                         <NumericContent
                             value="{TotalAmount}"
-                            scale=""
+                            scale="{Currency}"
                             truncateValueTo="15"
-                            currency="{Currency}"
                             valueColor="Good"
                             indicator="None"
                         />

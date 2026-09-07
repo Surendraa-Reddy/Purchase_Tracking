@@ -9,7 +9,7 @@ sap.ui.define([
     return Controller.extend("purchaseordertracking.zpomanagementapp.controller.Dashboard", {
 
         onInit: function () {
-            // Dashboard KPI and Chart JSON Model
+          
             var oKPIModel = new JSONModel({
                 totalCount: 0,
                 openCount: 0,
@@ -51,22 +51,22 @@ sap.ui.define([
 
                         mStatusCounts[oItem.Status] = (mStatusCounts[oItem.Status] || 0) + 1;
 
-                        // Accumulate Amounts
+                    
                         var fAmt = parseFloat(oItem.TotalAmount || 0);
                         fTotalVal += fAmt;
 
-                        // Vendor Aggregation
+                       
                         if (oItem.VendorId) {
                             mVendorSpend[oItem.VendorId] = (mVendorSpend[oItem.VendorId] || 0) + fAmt;
                         }
                     });
 
-                    // Format Status Data for Donut Chart
+                    
                     var aStatusData = Object.keys(mStatusCounts).map(function (sKey) {
                         return { Status: sKey, Count: mStatusCounts[sKey] };
                     });
 
-                    // Format Vendor Data for Column Chart
+                   
                     var aVendorData = Object.keys(mVendorSpend).map(function (sKey) {
                         return { VendorId: sKey, Amount: mVendorSpend[sKey] };
                     });
@@ -79,24 +79,22 @@ sap.ui.define([
                     oKPIModel.setProperty("/vendorData", aVendorData);
                 },
                 error: function () {
-                    // Handle OData read error
+                    
                 }
             });
         },
 
-        onPOCardPress: function (oEvent) {
-            var oTile = oEvent.getSource();
-            var oContext = oTile.getBindingContext();
+        onPOTableRowPress: function (oEvent) {
+         
+            var oListItem = oEvent.getParameter("listItem") || oEvent.getSource();
+            var oContext = oListItem.getBindingContext();
 
             if (!oContext) {
                 return;
             }
-
-            var sPoId = oContext.getProperty("PoId");
-
-            // Navigate directly to PurchaseOrderItem view
+            var sPoId = oContext.getProperty("PoId");  
             var oRouter = this.getOwnerComponent().getRouter();
-            oRouter.navTo("PurchaseOrderItem", {
+            oRouter.navTo("PurchaseOrderHeader", {
                 PoId: sPoId
             });
         },
@@ -109,8 +107,8 @@ sap.ui.define([
                 aFilters.push(new Filter("PoId", FilterOperator.Contains, sQuery));
             }
 
-            var oBox = this.byId("recentCardsBox");
-            var oBinding = oBox.getBinding("items");
+            var oTable = this.byId("recentPOTable");
+            var oBinding = oTable.getBinding("items");
             if (oBinding) {
                 oBinding.filter(aFilters);
             }
@@ -118,8 +116,8 @@ sap.ui.define([
 
         onRefreshDashboard: function () {
             this._calculateKPIsAndCharts();
-            var oBox = this.byId("recentCardsBox");
-            var oBinding = oBox.getBinding("items");
+            var oTable = this.byId("recentPOTable");
+            var oBinding = oTable.getBinding("items");
             if (oBinding) {
                 oBinding.refresh();
             }
