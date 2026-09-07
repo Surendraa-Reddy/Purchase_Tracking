@@ -1,0 +1,320 @@
+<mvc:View
+    controllerName="purchaseordertracking.zpomanagementapp.controller.PurchaseOrderItem"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:uxap="sap.uxap"
+    xmlns:layout="sap.ui.layout"
+    xmlns:form="sap.ui.layout.form"
+    xmlns:core="sap.ui.core"
+    displayBlock="true"
+>
+    <uxap:ObjectPageLayout
+        id="ObjectPageLayout"
+        showTitleInHeaderContent="true"
+        showHeaderContent="true"
+    >
+        <!-- ==================== HEADER TITLE BAR ==================== -->
+        <uxap:headerTitle>
+            <uxap:ObjectPageDynamicHeaderTitle>
+                <uxap:expandedHeading>
+                    <HBox
+                        alignItems="Center"
+                        displayInline="true"
+                    >
+                        <Title
+                            text="Purchase Order {PoId}"
+                            level="H2"
+                            wrapping="true"
+                            class="sapUiTinyMarginEnd"
+                        />
+                        <ObjectStatus
+                            text="{Status}"
+                            state="{= ${Status} === 'OPEN' ? 'Warning' : ${Status} === 'COMPLETED' ? 'Success' : 'None'}"
+                            icon="{= ${Status} === 'OPEN' ? 'sap-icon://in-process' : ${Status} === 'COMPLETED' ? 'sap-icon://sys-enter-back' : 'sap-icon://sys-help'}"
+                        />
+                    </HBox>
+                </uxap:expandedHeading>
+
+                <uxap:snappedHeading>
+                    <HBox alignItems="Center">
+                        <Title
+                            text="PO {PoId}"
+                            level="H3"
+                            class="sapUiTinyMarginEnd"
+                        />
+                        <ObjectStatus
+                            text="{Status}"
+                            state="{= ${Status} === 'OPEN' ? 'Warning' : ${Status} === 'COMPLETED' ? 'Success' : 'None'}"
+                        />
+                    </HBox>
+                </uxap:snappedHeading>
+
+                <uxap:expandedContent>
+                    <Text
+                        text="Supplier: {VendorId} • Company Code: {CompanyCode}"
+                    />
+                </uxap:expandedContent>
+
+                <uxap:snappedContent>
+                    <Text text="Supplier: {VendorId}" />
+                </uxap:snappedContent>
+
+                <uxap:actions>
+                    <Button
+                        text="Back"
+                        icon="sap-icon://nav-back"
+                        press=".onNavBack"
+                        type="Emphasized"
+                        tooltip="Return to Header List"
+                    />
+                </uxap:actions>
+            </uxap:ObjectPageDynamicHeaderTitle>
+        </uxap:headerTitle>
+
+        <!-- ==================== HEADER CONTENT ==================== -->
+        <uxap:headerContent>
+            <FlexBox
+                wrap="Wrap"
+                fitContainer="true"
+                alignItems="Stretch"
+                justify="SpaceBetween"
+            >
+                <GenericTile
+                    class="sapUiTinyMarginEnd sapUiTinyMarginBottom"
+                    header="Total Order Amount"
+                    frameType="OneByOne"
+                >
+                    <TileContent>
+                        <NumericContent
+                            value="{TotalAmount}"
+                            scale=""
+                            truncateValueTo="15"
+                            currency="{Currency}"
+                            valueColor="Good"
+                            indicator="None"
+                        />
+                    </TileContent>
+                </GenericTile>
+
+                <VBox class="sapUiLargeMarginBegin sapUiTinyMarginBottom">
+                    <Label
+                        text="Purchasing Organization"
+                        design="Bold"
+                        class="sapUiTinyMarginBottom"
+                    />
+                    <Text text="{PurOrg}" />
+                    <Label
+                        text="Purchasing Group"
+                        design="Bold"
+                        class="sapUiMediumMarginTop sapUiTinyMarginBottom"
+                    />
+                    <Text text="{PurGroup}" />
+                </VBox>
+
+                <VBox class="sapUiLargeMarginBegin sapUiTinyMarginBottom">
+                    <Label
+                        text="PO Date"
+                        design="Bold"
+                        class="sapUiTinyMarginBottom"
+                    />
+                    <Text
+                        text="{
+                        path: 'PoDate',
+                        type: 'sap.ui.model.type.Date',
+                        formatOptions: { style: 'medium', UTC: true }
+                    }"
+                    />
+                    <Label
+                        text="Status"
+                        design="Bold"
+                        class="sapUiMediumMarginTop sapUiTinyMarginBottom"
+                    />
+                    <Text text="{Status}" />
+                </VBox>
+            </FlexBox>
+        </uxap:headerContent>
+
+        <!-- ==================== MAIN SECTIONS ==================== -->
+        <uxap:sections>
+            <!-- SECTION 1: Line Items Table -->
+            <uxap:ObjectPageSection
+                titleUppercase="false"
+                id="itemsSection"
+                title="Line Items"
+            >
+                <uxap:subSections>
+                    <uxap:ObjectPageSubSection id="itemsSubSection">
+                        <uxap:blocks>
+                            <Table
+                                id="poItemTable"
+                                items="{to_Items}"
+                                growing="true"
+                                growingThreshold="10"
+                                autoPopinMode="true"
+                                class="sapFDynamicPageAlignContent"
+                                noDataText="No item details found for this purchase order."
+                            >
+                                <headerToolbar>
+                                    <OverflowToolbar style="Clear">
+                                        <Title
+                                            text="Items ({= ${to_Items}.length || 0 })"
+                                            level="H4"
+                                        />
+                                        <ToolbarSpacer />
+                                        <Button
+                                            icon="sap-icon://action-settings"
+                                            tooltip="Table Personalization"
+                                            press=".onTableSettings"
+                                        />
+                                    </OverflowToolbar>
+                                </headerToolbar>
+
+                                <columns>
+                                    <Column importance="High">
+                                        <Text text="Item / Material" />
+                                    </Column>
+                                    <Column importance="Medium">
+                                        <Text text="Description" />
+                                    </Column>
+                                    <Column importance="Low">
+                                        <Text text="Plant &amp; Storage" />
+                                    </Column>
+                                    <Column
+                                        importance="High"
+                                        hAlign="End"
+                                    >
+                                        <Text text="Quantity" />
+                                    </Column>
+                                    <Column
+                                        importance="Medium"
+                                        hAlign="End"
+                                    >
+                                        <Text text="Net Price" />
+                                    </Column>
+                                    <Column
+                                        importance="High"
+                                        hAlign="End"
+                                    >
+                                        <Text text="Net Value" />
+                                    </Column>
+                                </columns>
+
+                                <items>
+                                    <ColumnListItem vAlign="Middle">
+                                        <cells>
+                                            <ObjectIdentifier
+                                                title="Item {ItemNo}"
+                                                text="{Material}"
+                                            />
+
+                                            <Text
+                                                text="{MaterialDesc}"
+                                                wrapping="true"
+                                            />
+
+                                            <VBox>
+                                                <Text text="Plant: {Plant}" />
+                                                <Text
+                                                    text="Loc: {StorageLoc}"
+                                                    class="sapUiTinyMarginTop"
+                                                />
+                                            </VBox>
+
+                                            <ObjectNumber
+                                                number="{
+                                                    path: 'Quantity',
+                                                    type: 'sap.ui.model.type.Float',
+                                                    formatOptions: { minFractionDigits: 0, maxFractionDigits: 3 }
+                                                }"
+                                                unit="{Unit}"
+                                            />
+
+                                            <ObjectNumber
+                                                number="{
+                                                    path: 'NetPrice',
+                                                    type: 'sap.ui.model.type.Float',
+                                                    formatOptions: { minFractionDigits: 2, maxFractionDigits: 2 }
+                                                }"
+                                                unit="{Currency}"
+                                            />
+
+                                            <ObjectNumber
+                                                number="{
+                                                    path: 'NetValue',
+                                                    type: 'sap.ui.model.type.Float',
+                                                    formatOptions: { minFractionDigits: 2, maxFractionDigits: 2 }
+                                                }"
+                                                unit="{Currency}"
+                                            />
+                                        </cells>
+                                    </ColumnListItem>
+                                </items>
+                            </Table>
+                        </uxap:blocks>
+                    </uxap:ObjectPageSubSection>
+                </uxap:subSections>
+            </uxap:ObjectPageSection>
+
+            <!-- SECTION 2: General Information Form -->
+            <uxap:ObjectPageSection
+                titleUppercase="false"
+                id="generalSection"
+                title="General Details"
+            >
+                <uxap:subSections>
+                    <uxap:ObjectPageSubSection id="generalSubSection">
+                        <uxap:blocks>
+                            <form:SimpleForm
+                                id="poGeneralForm"
+                                editable="false"
+                                layout="ColumnLayout"
+                                columnsM="2"
+                                columnsL="3"
+                                columnsXL="3"
+                            >
+                                <form:content>
+                                    
+                                    <core:Title text="Header Information" />
+
+                                    <Label text="Purchase Order ID" />
+                                    <Text text="{PoId}" />
+
+                                    <Label text="PO Date" />
+                                    <Text
+                                        text="{
+                                        path: 'PoDate',
+                                        type: 'sap.ui.model.type.Date',
+                                        formatOptions: { style: 'medium', UTC: true }
+                                    }"
+                                    />
+
+                                    <Label text="Supplier ID" />
+                                    <Text text="{VendorId}" />
+
+                                    <Label text="Status" />
+                                    <Text text="{Status}" />
+
+                                    <Label text="Total Amount" />
+                                    <Text text="{TotalAmount} {Currency}" />
+
+                                   
+                                    <core:Title text="Organizational Data" />
+
+                                    <Label text="Company Code" />
+                                    <Text text="{CompanyCode}" />
+
+                                    <Label text="Purchasing Organization" />
+                                    <Text text="{PurOrg}" />
+
+                                    <Label text="Purchasing Group" />
+                                    <Text text="{PurGroup}" />
+                                  
+                                </form:content>
+                            </form:SimpleForm>
+                        </uxap:blocks>
+                    </uxap:ObjectPageSubSection>
+                </uxap:subSections>
+            </uxap:ObjectPageSection>
+        </uxap:sections>
+    </uxap:ObjectPageLayout>
+</mvc:View>

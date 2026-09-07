@@ -1,0 +1,247 @@
+<mvc:View
+    controllerName="purchaseordertracking.zpomanagementapp.controller.Dashboard"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:f="sap.f"
+    xmlns:card="sap.f.cards"
+    xmlns:layout="sap.ui.layout"
+    xmlns:core="sap.ui.core"
+    xmlns:viz="sap.viz.ui5.controls"
+    xmlns:viz.controls="sap.viz.ui5.controls.common"
+    xmlns:viz.feeds="sap.viz.ui5.controls.common.feeds"
+    xmlns:viz.data="sap.viz.ui5.data"
+    displayBlock="true"
+>
+    <f:DynamicPage headerExpanded="true">
+        <f:title>
+            <f:DynamicPageTitle>
+                <f:heading>
+                    <Title
+                        text="Purchase Order Analytics Dashboard"
+                        level="H2"
+                    />
+                </f:heading>
+                <f:actions>
+                    <Button
+                        icon="sap-icon://refresh"
+                        text="Refresh Analytics"
+                        type="Emphasized"
+                        press=".onRefreshDashboard"
+                    />
+                </f:actions>
+            </f:DynamicPageTitle>
+        </f:title>
+
+        <f:content>
+            <VBox class="sapUiSmallMargin">
+                <!-- TOP KPI METRIC CARDS -->
+                <layout:Grid
+                    defaultSpan="XL3 L3 M6 S12"
+                    class="sapUiSmallMarginBottom"
+                >
+                    <GenericTile
+                        header="Total Orders"
+                        subheader="All Time"
+                        frameType="OneByOne"
+                        press=".onTilePress"
+                        class="sapUiTinyMarginBottom"
+                    >
+                        <TileContent>
+                            <NumericContent
+                                value="{kpiModel>/totalCount}"
+                                valueColor="Neutral"
+                                icon="sap-icon://document"
+                            />
+                        </TileContent>
+                    </GenericTile>
+
+                    <GenericTile
+                        header="Open Orders"
+                        subheader="Requires Action"
+                        frameType="OneByOne"
+                        press=".onTilePress"
+                        class="sapUiTinyMarginBottom"
+                    >
+                        <TileContent>
+                            <NumericContent
+                                value="{kpiModel>/openCount}"
+                                valueColor="Critical"
+                                indicator="Up"
+                                icon="sap-icon://in-process"
+                            />
+                        </TileContent>
+                    </GenericTile>
+
+                    <GenericTile
+                        header="Completed Orders"
+                        subheader="Fully Processed"
+                        frameType="OneByOne"
+                        press=".onTilePress"
+                        class="sapUiTinyMarginBottom"
+                    >
+                        <TileContent>
+                            <NumericContent
+                                value="{kpiModel>/completedCount}"
+                                valueColor="Good"
+                                icon="sap-icon://sys-enter-back"
+                            />
+                        </TileContent>
+                    </GenericTile>
+
+                    <GenericTile
+                        header="Total Commit Spend"
+                        subheader="Overall Value"
+                        frameType="OneByOne"
+                        press=".onTilePress"
+                        class="sapUiTinyMarginBottom"
+                    >
+                        <TileContent unit="USD">
+                            <NumericContent
+                                value="{kpiModel>/totalValue}"
+                                truncateValueTo="12"
+                                valueColor="Good"
+                                icon="sap-icon://lead"
+                            />
+                        </TileContent>
+                    </GenericTile>
+                </layout:Grid>
+
+                <!-- ANALYTICS VISUALIZATIONS SECTION -->
+                <layout:Grid
+                    defaultSpan="XL6 L6 M12 S12"
+                    class="sapUiSmallMarginBottom"
+                >
+                    <!-- Donut Chart: Orders by Status -->
+                    <Panel
+                        headerText="Order Status Distribution"
+                        class="sapUiNoContentPadding"
+                    >
+                        <viz:VizFrame
+                            id="idDonutChart"
+                            uiConfig="{applicationSet:'fiori'}"
+                            height="300px"
+                            width="100%"
+                            vizType="donut"
+                        >
+                            <viz:dataset>
+                                <viz.data:FlattenedDataset
+                                    data="{kpiModel>/statusData}"
+                                >
+                                    <viz.data:dimensions>
+                                        <viz.data:DimensionDefinition
+                                            name="Status"
+                                            value="{Status}"
+                                        />
+                                    </viz.data:dimensions>
+                                    <viz.data:measures>
+                                        <viz.data:MeasureDefinition
+                                            name="Count"
+                                            value="{Count}"
+                                        />
+                                    </viz.data:measures>
+                                </viz.data:FlattenedDataset>
+                            </viz:dataset>
+                            <viz:feeds>
+                                <viz.feeds:FeedItem
+                                    uid="size"
+                                    type="Measure"
+                                    values="Count"
+                                />
+                                <viz.feeds:FeedItem
+                                    uid="color"
+                                    type="Dimension"
+                                    values="Status"
+                                />
+                            </viz:feeds>
+                        </viz:VizFrame>
+                    </Panel>
+
+                    <!-- Bar Chart: Top Suppliers Spend -->
+                    <Panel
+                        headerText="Top Vendor Commitments"
+                        class="sapUiNoContentPadding"
+                    >
+                        <viz:VizFrame
+                            id="idBarChart"
+                            uiConfig="{applicationSet:'fiori'}"
+                            height="300px"
+                            width="100%"
+                            vizType="column"
+                        >
+                            <viz:dataset>
+                                <viz.data:FlattenedDataset
+                                    data="{kpiModel>/vendorData}"
+                                >
+                                    <viz.data:dimensions>
+                                        <viz.data:DimensionDefinition
+                                            name="Vendor"
+                                            value="{VendorId}"
+                                        />
+                                    </viz.data:dimensions>
+                                    <viz.data:measures>
+                                        <viz.data:MeasureDefinition
+                                            name="Spend"
+                                            value="{Amount}"
+                                        />
+                                    </viz.data:measures>
+                                </viz.data:FlattenedDataset>
+                            </viz:dataset>
+                            <viz:feeds>
+                                <viz.feeds:FeedItem
+                                    uid="valueAxis"
+                                    type="Measure"
+                                    values="Spend"
+                                />
+                                <viz.feeds:FeedItem
+                                    uid="categoryAxis"
+                                    type="Dimension"
+                                    values="Vendor"
+                                />
+                            </viz:feeds>
+                        </viz:VizFrame>
+                    </Panel>
+                </layout:Grid>
+
+                <!-- QUICK NAVIGATION / RECENT PO TILES -->
+                <Panel headerText="Recent Orders Quick Launchpad">
+                    <headerToolbar>
+                        <OverflowToolbar style="Clear">
+                            <Title
+                                text="Recent Orders Quick Access"
+                                level="H4"
+                            />
+                            <ToolbarSpacer />
+                            <SearchField
+                                width="250px"
+                                placeholder="Find PO Number..."
+                                search=".onQuickSearch"
+                            />
+                        </OverflowToolbar>
+                    </headerToolbar>
+
+                    <HBox
+                        id="recentCardsBox"
+                        wrap="Wrap"
+                        items="{/POHeaderSet}"
+                    >
+                        <GenericTile
+                            header="PO {PoId}"
+                            subheader="Vendor: {VendorId}"
+                            frameType="TwoByOne"
+                            press=".onPOCardPress"
+                            class="sapUiTinyMarginEnd sapUiTinyMarginBottom"
+                        >
+                            <TileContent footer="{Status}">
+                                <NumericContent
+                                    value="{TotalAmount}"
+                                    scale=""
+                                    valueColor="{= ${Status} === 'OPEN' ? 'Critical' : ${Status} === 'COMPLETED' ? 'Good' : 'Neutral'}"
+                                />
+                            </TileContent>
+                        </GenericTile>
+                    </HBox>
+                </Panel>
+            </VBox>
+        </f:content>
+    </f:DynamicPage>
+</mvc:View>

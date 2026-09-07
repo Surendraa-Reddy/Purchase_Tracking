@@ -1,0 +1,136 @@
+{
+  "_version": "1.48.0",
+  "sap.app": {
+    "id": "purchaseordertracking.zpomanagementapp",
+    "type": "application",
+    "i18n": "i18n/i18n.properties",
+    "applicationVersion": {
+      "version": "0.0.1"
+    },
+    "title": "{{appTitle}}",
+    "description": "{{appDescription}}",
+    "resources": "resources.json",
+    "sourceTemplate": {
+      "id": "@sap/generator-fiori:basic",
+      "version": "1.32.0",
+      "toolsId": "920877ba-c45e-4eb6-afc2-bd6214d90c31"
+    },
+    "dataSources": {
+      "mainService": {
+        "uri": "/sap/opu/odata/sap/ZPO_MANAGEMENT_SRV/",
+        "type": "OData",
+        "settings": {
+          "annotations": [],
+          "localUri": "localService/mainService/metadata.xml",
+          "odataVersion": "2.0"
+        }
+      }
+    }
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "icons": {
+      "icon": "",
+      "favIcon": "",
+      "phone": "",
+      "phone@2": "",
+      "tablet": "",
+      "tablet@2": ""
+    },
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
+    }
+  },
+  "sap.ui5": {
+    "flexEnabled": true,
+    "dependencies": {
+      "minUI5Version": "1.108.9",
+      "libs": {
+        "sap.m": {},
+        "sap.ui.core": {}
+      }
+    },
+    "contentDensities": {
+      "compact": true,
+      "cozy": true
+    },
+    "models": {
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": {
+          "bundleName": "purchaseordertracking.zpomanagementapp.i18n.i18n"
+        }
+      },
+      "": {
+        "dataSource": "mainService",
+        "preload": true,
+        "settings": {}
+      }
+    },
+    "resources": {
+      "css": [
+        {
+          "uri": "css/style.css"
+        }
+      ]
+    },
+    "routing": {
+      "config": {
+        "routerClass": "sap.m.routing.Router",
+        "viewType": "XML",
+        "async": true,
+        "viewPath": "purchaseordertracking.zpomanagementapp.view",
+        "controlAggregation": "pages",
+        "controlId": "app",
+        "clearControlAggregation": false
+      },
+      "routes": [
+        {
+          "name": "Dashboard",
+          "pattern": "",
+          "target": [
+            "Dashboard"
+          ]
+        },
+        {
+          "name": "PurchaseOrderHeader",
+          "pattern": "PurchaseOrderHeader",
+          "target": [
+            "PurchaseOrderHeader"
+          ]
+        },
+        {
+          "name": "Poitems",
+          "pattern": "POHeaderSet/{poId}",
+          "target": [
+            "Poitems"
+          ]
+        }
+      ],
+      "targets": {
+        "PurchaseOrderHeader": {
+          "viewType": "XML",
+          "transition": "slide",
+          "clearControlAggregation": false,
+          "viewName": "PurchaseOrderHeader"
+        },
+        "Poitems": {
+          "viewType": "XML",
+          "viewName": "PurchaseOrderItem"
+        },
+        "Dashboard": {
+          "viewType": "XML",
+          "viewName": "Dashboard"
+        }
+      }
+    },
+    "rootView": {
+      "viewName": "purchaseordertracking.zpomanagementapp.view.App",
+      "type": "XML",
+      "async": true,
+      "id": "App"
+    }
+  }
+}

@@ -1,0 +1,233 @@
+<mvc:View
+    controllerName="purchaseordertracking.zpomanagementapp.controller.PurchaseOrderHeader"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:f="sap.f"
+    xmlns:fb="sap.ui.comp.filterbar"
+    xmlns:core="sap.ui.core"
+    displayBlock="true"
+>
+    <f:DynamicPage
+        id="managePage"
+        headerExpanded="true"
+        fitContent="true"
+    >
+        <!-- Page Header Title -->
+        <f:title>
+            <f:DynamicPageTitle>
+                <f:heading>
+                    <Title
+                        text="Manage Purchase Orders"
+                        level="H2"
+                    />
+                </f:heading>
+                <f:snappedContent>
+                    <Text
+                        text="Filter, create, and manage system purchase orders"
+                    />
+                </f:snappedContent>
+                <f:actions>
+                    <Button
+                        text="Create PO"
+                        type="Emphasized"
+                        press=".onCreatePo"
+                        icon="sap-icon://add"
+                    />
+                    <Button
+                        text="Export to Excel"
+                        press=".onExportExcel"
+                        icon="sap-icon://excel-attachment"
+                    />
+                </f:actions>
+            </f:DynamicPageTitle>
+        </f:title>
+
+        <f:header>
+            <f:DynamicPageHeader pinnable="true">
+                <fb:FilterBar
+                    id="filterBar"
+                    search=".onSearch"
+                    useToolbar="false"
+                >
+                    <fb:filterGroupItems>
+                        <fb:FilterGroupItem
+                            name="PO_ID"
+                            label="Purchase Order ID"
+                            groupName="G1"
+                            visibleInFilterBar="true"
+                        >
+                            <fb:control>
+                                <Input
+                                    id="filterPoId"
+                                    placeholder="e.g. ZPO4500001"
+                                />
+                            </fb:control>
+                        </fb:FilterGroupItem>
+                        <fb:FilterGroupItem
+                            name="Vendor"
+                            label="Vendor ID"
+                            groupName="G1"
+                            visibleInFilterBar="true"
+                        >
+                            <fb:control>
+                                <Input
+                                    id="filterVendor"
+                                    placeholder="e.g. VEND1001"
+                                />
+                            </fb:control>
+                        </fb:FilterGroupItem>
+                        <fb:FilterGroupItem
+                            name="Status"
+                            label="Status"
+                            groupName="G1"
+                            visibleInFilterBar="true"
+                        >
+                            <fb:control>
+                                <Select id="filterStatus">
+                                    <core:Item
+                                        key=""
+                                        text="All Statuses"
+                                    />
+                                    <core:Item
+                                        key="OPEN"
+                                        text="Open"
+                                    />
+                                    <core:Item
+                                        key="PARTIALLY RECEIVED"
+                                        text="Partially Received"
+                                    />
+                                    <core:Item
+                                        key="COMPLETED"
+                                        text="Completed"
+                                    />
+                                </Select>
+                            </fb:control>
+                        </fb:FilterGroupItem>
+                    </fb:filterGroupItems>
+                </fb:FilterBar>
+            </f:DynamicPageHeader>
+        </f:header>
+
+        <!-- Main Content Table -->
+        <f:content>
+            <Table
+                id="managePoTable"
+                mode="MultiSelect"
+                items="{/POHeaderSet}"
+                growing="true"
+                growingThreshold="20"
+                noDataText="No purchase orders found."
+            >
+                <headerToolbar>
+                    <OverflowToolbar>
+                        <Title
+                            text="Purchase Orders ({= ${/POHeaderSet/$count} || 0 })"
+                            level="H3"
+                        />
+                        <ToolbarSpacer />
+                        <Button
+                            id="btnDelete"
+                            text="Delete Selected"
+                            type="Reject"
+                            press=".onDeleteSelected"
+                            icon="sap-icon://delete"
+                        />
+                        <Button
+                            icon="sap-icon://refresh"
+                            type="Transparent"
+                            press=".onRefresh"
+                            tooltip="Refresh Data"
+                        />
+                    </OverflowToolbar>
+                </headerToolbar>
+
+                <columns>
+                    <Column importance="High">
+                        <Text text="PO Number" />
+                    </Column>
+                    <Column importance="High">
+                        <Text text="Vendor ID" />
+                    </Column>
+                    <Column
+                        minScreenWidth="Tablet"
+                        demandPopin="true"
+                    >
+                        <Text text="Company Code" />
+                    </Column>
+                    <Column
+                        minScreenWidth="Tablet"
+                        demandPopin="true"
+                    >
+                        <Text text="Purch. Org" />
+                    </Column>
+                    <Column
+                        minScreenWidth="Tablet"
+                        demandPopin="true"
+                    >
+                        <Text text="Purch. Group" />
+                    </Column>
+                    <Column
+                        importance="High"
+                        hAlign="End"
+                    >
+                        <Text text="Total Amount" />
+                    </Column>
+                    <Column
+                        importance="High"
+                        hAlign="Center"
+                    >
+                        <Text text="Status" />
+                    </Column>
+                    <Column
+                        importance="High"
+                        hAlign="Center"
+                    >
+                        <Text text="Actions" />
+                    </Column>
+                </columns>
+
+                <items>
+                    <ColumnListItem
+                        type="Navigation"
+                        press=".onPoSelect"
+                    >
+                        <cells>
+                            <ObjectIdentifier title="{PoId}" />
+                            <Text text="{VendorId}" />
+                            <Text text="{CompanyCode}" />
+                            <Text text="{PurOrg}" />
+                            <Text text="{PurGroup}" />
+                            <ObjectNumber
+                                number="{TotalAmount}"
+                                unit="{Currency}"
+                            />
+                            <ObjectStatus
+                                text="{Status}"
+                                state="{= ${Status} === 'OPEN' ? 'Warning' : ${Status} === 'COMPLETED' ? 'Success' : 'None'}"
+                            />
+                            <MenuButton
+                                icon="sap-icon://overflow"
+                                type="Transparent"
+                            >
+                                <menu>
+                                    <Menu>
+                                        <MenuItem
+                                            text="Edit PO"
+                                            icon="sap-icon://edit"
+                                            press=".onEditPo"
+                                        />
+                                        <MenuItem
+                                            text="View Items"
+                                            icon="sap-icon://detail-view"
+                                            press=".onViewItems"
+                                        />
+                                    </Menu>
+                                </menu>
+                            </MenuButton>
+                        </cells>
+                    </ColumnListItem>
+                </items>
+            </Table>
+        </f:content>
+    </f:DynamicPage>
+</mvc:View>
