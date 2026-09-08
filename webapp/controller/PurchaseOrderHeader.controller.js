@@ -68,7 +68,8 @@ sap.ui.define([
         },
 
         onCreatePo: function () {
-            MessageBox.information("Create Purchase Order dialog triggered.");
+            var oRouter = this.getOwnerComponent().getRouter();
+            oRouter.navTo("CreatePoHeader"); 
         },
 
         onDeleteSelected: function () {

@@ -42,7 +42,7 @@ sap.ui.define([
                     var mVendorSpend = {};
 
                     aResults.forEach(function (oItem) {
-                        // Count Statuses
+                  
                         if (oItem.Status === "OPEN") {
                             iOpenCount++;
                         } else if (oItem.Status === "COMPLETED") {

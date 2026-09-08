@@ -1,11 +1,11 @@
 <mvc:View
-    controllerName="purchaseordertracking.zpomanagementapp.controller.Login"
+    controllerName="purchaseordertracking.zpomanagementapp.controller.Register"
     xmlns:mvc="sap.ui.core.mvc"
     xmlns="sap.m"
     xmlns:f="sap.f"
-    xmlns:core="sap.ui.core"
+    xmlns:card="sap.f.cards"
     displayBlock="true"
-  >
+>
     <FlexBox
         height="100%"
         width="100%"
@@ -13,14 +13,12 @@
         justifyContent="Center"
         class="sapUiContentPadding sapUiResponsivePadding"
     >
-       
         <f:Card width="380px">
             <f:header>
                 <card:Header
-                    xmlns:card="sap.f.cards"
                     title="Purchase Order Tracking"
-                    subtitle="Sign in to your account"
-                    iconSrc="sap-icon://supplier"
+                    subtitle="Create a new account"
+                    iconSrc="sap-icon://add-employee"
                 />
             </f:header>
 
@@ -30,67 +28,68 @@
                     justifyContent="Center"
                 >
                     <MessageStrip
-                        id="loginErrorMessage"
+                        id="regErrorMessage"
                         type="Error"
                         visible="false"
                         showIcon="true"
                         class="sapUiSmallMarginBottom"
                     />
 
-          
+                    <!-- Username Field -->
                     <Label
                         text="Username / User ID"
                         required="true"
                     />
                     <Input
-                        id="usernameInput"
-                        placeholder="Enter your user ID"
+                        id="regUsernameInput"
+                        placeholder="Choose a username"
                         valueLiveUpdate="true"
-                        submit=".onLogin"
                         class="sapUiSmallMarginBottom"
-                    >
-                        <layoutData>
-                            <FlexItemData growFactor="1" />
-                        </layoutData>
-                    </Input>
+                    />
 
+                    <!-- Password Field -->
                     <Label
                         text="Password"
                         required="true"
                     />
                     <Input
-                        id="passwordInput"
+                        id="regPasswordInput"
                         type="Password"
-                        placeholder="Enter your password"
+                        placeholder="Enter password"
                         valueLiveUpdate="true"
-                        submit=".onLogin"
-                        class="sapUiMediumMarginBottom"
-                    />
-
-         
-                    <Button
-                        id="btnLogin"
-                        text="Sign In"
-                        type="Emphasized"
-                        press=".onLogin"
-                        width="100%"
-                        icon="sap-icon://log"
                         class="sapUiSmallMarginBottom"
                     />
 
-                    
-                    <FlexBox
-                        justifyContent="SpaceBetween"
-                        alignItems="Center"
-                        class="sapUiTinyMarginBottom"
-                    >
+                    <!-- Confirm Password Field -->
+                    <Label
+                        text="Confirm Password"
+                        required="true"
+                    />
+                    <Input
+                        id="regConfirmPasswordInput"
+                        type="Password"
+                        placeholder="Re-enter password"
+                        valueLiveUpdate="true"
+                        submit=".onRegisterSubmit"
+                        class="sapUiMediumMarginBottom"
+                    />
+
+                    <!-- Submit Button -->
+                    <Button
+                        id="btnRegister"
+                        text="Create Account"
+                        type="Emphasized"
+                        press=".onRegisterSubmit"
+                        width="100%"
+                        icon="sap-icon://accept"
+                        class="sapUiSmallMarginBottom"
+                    />
+
+                    <!-- Navigation Link Back to Login -->
+                    <FlexBox justifyContent="Center">
                         <Link
-                            text="Forgot Password?"
-                            press=".onForgotPassword"
-                        />
-                        <Link
-                            text="Create Account"
-                            press=".onRegister"
+                            text="Already have an account? Sign In"
+                            press=".onNavBack"
                         />
                     </FlexBox>
                 </VBox>

@@ -1,0 +1,145 @@
+<mvc:View
+    controllerName="purchaseordertracking.zpomanagementapp.controller.CreatePoHeader"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:f="sap.ui.layout.form"
+    xmlns:core="sap.ui.core"
+    displayBlock="true"
+>
+    <Page
+        id="createPOPage"
+        title="Create Purchase Order"
+        showNavButton="true"
+        navButtonPress=".onNavBack"
+    >
+        <content>
+            <VBox class="sapUiSmallMargin">
+                <Panel
+                    headerText="1. Header Information"
+                    expandable="true"
+                    expanded="true"
+                    class="sapUiTinyMarginBottom"
+                >
+                    <f:SimpleForm
+                        id="poHeaderForm"
+                        editable="true"
+                        layout="ColumnLayout"
+                        columnsM="2"
+                        columnsL="2"
+                        columnsXL="2"
+                    >
+                        <f:content>
+                            <Label
+                                text="PO ID"
+                                required="true"
+                                labelFor="poIdInput"
+                            />
+                            <Input
+                                id="poIdInput"
+                                placeholder="Enter PO ID"
+                                maxLength="10"
+                                liveChange=".onInputChange"
+                            />
+
+                            <Label
+                                text="Vendor"
+                                required="true"
+                                labelFor="vendorInput"
+                            />
+                            <Input
+                                id="vendorInput"
+                                placeholder="Enter Vendor ID"
+                                maxLength="10"
+                                showValueHelp="true"
+                                valueHelpRequest=".onVendorValueHelp"
+                                liveChange=".onInputChange"
+                            />
+
+                            <Label
+                                text="Purchasing Org."
+                                required="true"
+                                labelFor="purchOrgInput"
+                            />
+                            <Input
+                                id="purchOrgInput"
+                                placeholder="e.g. 1000"
+                                maxLength="4"
+                                liveChange=".onInputChange"
+                            />
+
+                            <Label
+                                text="Purchasing Group"
+                                required="true"
+                                labelFor="purchGroupInput"
+                            />
+                            <Input
+                                id="purchGroupInput"
+                                placeholder="e.g. 001"
+                                maxLength="3"
+                                liveChange=".onInputChange"
+                            />
+
+                            <Label
+                                text="Company Code"
+                                required="true"
+                                labelFor="companyCodeInput"
+                            />
+                            <Input
+                                id="companyCodeInput"
+                                placeholder="e.g. 1000"
+                                maxLength="4"
+                                liveChange=".onInputChange"
+                            />
+
+                            <Label
+                                text="Document Date"
+                                required="true"
+                                labelFor="docDatePicker"
+                            />
+                            <DatePicker
+                                id="docDatePicker"
+                                displayFormat="yyyy-MM-dd"
+                                valueFormat="yyyy-MM-dd"
+                            />
+
+                            <Label
+                                text="Currency"
+                                required="true"
+                                labelFor="currencySelect"
+                            />
+                            <Select
+                                id="currencySelect"
+                                selectedKey="USD"
+                            >
+                                <core:Item
+                                    key="USD"
+                                    text="USD"
+                                />
+                                <core:Item
+                                    key="EUR"
+                                    text="EUR"
+                                />
+                                <core:Item
+                                    key="INR"
+                                    text="INR"
+                                />
+                            </Select>
+                        </f:content>
+                    </f:SimpleForm>
+                </Panel>
+            </VBox>
+            <OverflowToolbar>
+                <ToolbarSpacer />
+                <Button
+                    text="Save Purchase Order"
+                    type="Emphasized"
+                    press=".onSavePO"
+                />
+                <Button
+                    text="Cancel"
+                    press=".onCancel"
+                />
+            </OverflowToolbar>
+        </content>
+    </Page>
+</mvc:View>

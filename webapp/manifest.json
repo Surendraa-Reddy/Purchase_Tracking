@@ -95,6 +95,13 @@
           ]
         },
         {
+          "name": "Register",
+          "pattern": "register",
+          "target": [
+            "Register"
+          ]
+        },
+        {
           "name": "Dashboard",
           "pattern": "Dashboard",
           "target": [
@@ -107,6 +114,11 @@
           "target": [
             "PurchaseOrderHeader"
           ]
+        },
+        {
+          "name": "CreatePoHeader",
+          "pattern": "CreatePO",
+          "target": "CreatePoHeader"
         },
         {
           "name": "Poitems",
@@ -122,11 +134,21 @@
           "transition": "show",
           "viewName": "Login"
         },
+        "Register": {
+          "viewType": "XML",
+          "transition": "show",
+          "viewName": "Register"
+        },
         "PurchaseOrderHeader": {
           "viewType": "XML",
           "transition": "slide",
           "clearControlAggregation": false,
           "viewName": "PurchaseOrderHeader"
+        },
+        "CreatePoHeader": {
+          "viewType": "XML",
+          "transition": "slide",
+          "viewName": "CreatePOHeader"
         },
         "Poitems": {
           "viewType": "XML",

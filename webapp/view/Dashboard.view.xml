@@ -12,29 +12,14 @@
     xmlns:viz.data="sap.viz.ui5.data"
     displayBlock="true"
 >
-    <f:DynamicPage headerExpanded="true">
-        <f:title>
-            <f:DynamicPageTitle>
-                <f:heading>
-                    <Title
-                        text="Purchase Order Analytics Dashboard"
-                        level="H2"
-                    />
-                </f:heading>
-                <f:actions>
-                    <Button
-                        icon="sap-icon://refresh"
-                        text="Refresh Analytics"
-                        type="Emphasized"
-                        press=".onRefreshDashboard"
-                    />
-                </f:actions>
-            </f:DynamicPageTitle>
-        </f:title>
-
-        <f:content>
+    <Page
+        id="dashboardPage"
+        showHeader="false"
+        enableScrolling="true"
+    >
+        <content>
             <VBox class="sapUiSmallMargin">
-                <!-- TOP KPI METRIC CARDS -->
+                
                 <layout:Grid
                     defaultSpan="XL3 L3 M6 S12"
                     class="sapUiSmallMarginBottom"
@@ -105,13 +90,11 @@
                         </TileContent>
                     </GenericTile>
                 </layout:Grid>
-
-                <!-- ANALYTICS VISUALIZATIONS SECTION -->
                 <layout:Grid
                     defaultSpan="XL6 L6 M12 S12"
                     class="sapUiSmallMarginBottom"
                 >
-                    <!-- Donut Chart: Orders by Status -->
+                    
                     <Panel
                         headerText="Order Status Distribution"
                         class="sapUiNoContentPadding"
@@ -156,7 +139,7 @@
                         </viz:VizFrame>
                     </Panel>
 
-                    <!-- Bar Chart: Top Suppliers Spend -->
+                 
                     <Panel
                         headerText="Top Vendor Commitments"
                         class="sapUiNoContentPadding"
@@ -264,6 +247,6 @@
                     </Table>
                 </Panel>
             </VBox>
-        </f:content>
-    </f:DynamicPage>
+        </content>
+    </Page>
 </mvc:View>

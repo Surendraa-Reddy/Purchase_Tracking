@@ -1,7 +1,44 @@
-<mvc:View controllerName="purchaseordertracking.zpomanagementapp.controller.App"
-    xmlns:html="http://www.w3.org/1999/xhtml"
-    xmlns:mvc="sap.ui.core.mvc" displayBlock="true"
-    xmlns="sap.m">
-    <App id="app">
-    </App>
+<mvc:View
+    controllerName="purchaseordertracking.zpomanagementapp.controller.App"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:tnt="sap.tnt"
+    displayBlock="true"
+>
+    <Shell id="shell">
+        <Page
+            id="appPage"
+            showHeader="true"
+            enableScrolling="false"
+        >
+            <customHeader>
+                <tnt:ToolHeader
+                    class="sapUiMediumMarginBottom customLargeHeader"
+                >
+                    <Avatar
+                        src="sap-icon://supplier"
+                        displaySize="M"
+                        class="sapUiSmallMarginEnd"
+                    />
+                    <Title
+                        text="Purchase Order Management"
+                        level="H1"
+                        titleStyle="H1"
+                        class="sapUiTinyMarginBegin"
+                    />
+                    <ToolbarSpacer />
+                    <Button
+                        icon="sap-icon://log"
+                        text="Logout"
+                        type="Emphasized"
+                        press=".onLogout"
+                        class="sapUiSmallMarginEnd"
+                    />
+                </tnt:ToolHeader>
+            </customHeader>
+            <content>
+                <App id="app" />
+            </content>
+        </Page>
+    </Shell>
 </mvc:View>

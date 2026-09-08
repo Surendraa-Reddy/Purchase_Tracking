@@ -87,8 +87,7 @@
                     <TileContent>
                         <NumericContent
                             value="{TotalAmount}"
-                            scale="{Currency}"
-                            truncateValueTo="15"
+                            truncateValueTo="10"
                             valueColor="Good"
                             indicator="None"
                         />
@@ -133,9 +132,8 @@
             </FlexBox>
         </uxap:headerContent>
 
-        <!-- ==================== MAIN SECTIONS ==================== -->
         <uxap:sections>
-            <!-- SECTION 1: Line Items Table -->
+       
             <uxap:ObjectPageSection
                 titleUppercase="false"
                 id="itemsSection"
@@ -253,8 +251,6 @@
                     </uxap:ObjectPageSubSection>
                 </uxap:subSections>
             </uxap:ObjectPageSection>
-
-            <!-- SECTION 2: General Information Form -->
             <uxap:ObjectPageSection
                 titleUppercase="false"
                 id="generalSection"
@@ -272,7 +268,6 @@
                                 columnsXL="3"
                             >
                                 <form:content>
-                                    
                                     <core:Title text="Header Information" />
 
                                     <Label text="Purchase Order ID" />
@@ -296,7 +291,6 @@
                                     <Label text="Total Amount" />
                                     <Text text="{TotalAmount} {Currency}" />
 
-                                   
                                     <core:Title text="Organizational Data" />
 
                                     <Label text="Company Code" />
@@ -307,7 +301,6 @@
 
                                     <Label text="Purchasing Group" />
                                     <Text text="{PurGroup}" />
-                                  
                                 </form:content>
                             </form:SimpleForm>
                         </uxap:blocks>

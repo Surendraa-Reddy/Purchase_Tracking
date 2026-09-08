@@ -1,14 +1,14 @@
 sap.ui.define([
     "sap/ui/core/mvc/Controller",
     "sap/m/MessageToast",
+    "sap/ui/core/Fragment",
     "sap/ui/core/ValueState"
-], function (Controller, MessageToast, ValueState) {
+], function (Controller, MessageToast,  Fragment, ValueState) {
     "use strict";
 
     return Controller.extend("purchaseordertracking.zpomanagementapp.controller.Login", {
 
         onInit: function () {
-            // Optional: Auto-focus the username field on view display
             this.getView().addEventDelegate({
                 onAfterShow: function () {
                     this.byId("usernameInput").focus();
@@ -20,17 +20,15 @@ sap.ui.define([
             var oUsernameInput = this.byId("usernameInput");
             var oPasswordInput = this.byId("passwordInput");
             var oErrorStrip = this.byId("loginErrorMessage");
-            var oBtn = this.byId("btnLogin");
 
             var sUsername = oUsernameInput.getValue().trim();
             var sPassword = oPasswordInput.getValue().trim();
 
-            // Reset validation states
             oUsernameInput.setValueState(ValueState.None);
             oPasswordInput.setValueState(ValueState.None);
             oErrorStrip.setVisible(false);
 
-            
+            // 1. Input Validation
             var bValid = true;
             if (!sUsername) {
                 oUsernameInput.setValueState(ValueState.Error);
@@ -47,29 +45,105 @@ sap.ui.define([
                 return;
             }
 
-           
             this.getView().setBusy(true);
 
+            
+            var oModel = this.getOwnerComponent().getModel();
+
            
-            setTimeout(function () {
-                this.getView().setBusy(false);
+            var sPath = oModel.createKey("/UserSet", {
+                UserName: sUsername
+            });
 
-                if (sUsername.toUpperCase() === "DEMO" && sPassword === "demo") {
-                    MessageToast.show("Welcome back!");
+         
+            oModel.read(sPath, {
+                headers: {
+                    "x-user-password": sPassword
+                },
+                success: function (oData) {
+                    this.getView().setBusy(false);
+                    MessageToast.show("Welcome back, " + (oData.UserName || oData.user_name) + "!");
 
-                   
+                    oUsernameInput.setValue("");
+                    oPasswordInput.setValue("");
+
                     var oRouter = this.getOwnerComponent().getRouter();
                     oRouter.navTo("Dashboard");
-                } else {
-                  
-                    oErrorStrip.setText("Invalid credentials. Please try 'DEMO' / 'demo'.");
+                }.bind(this),
+                error: function (oError) {
+                    this.getView().setBusy(false);
+                    var sErrorMsg = "Invalid Username or Password.";
+
+                    try {
+                        var oResponse = JSON.parse(oError.responseText);
+                        sErrorMsg = oResponse.error.message.value;
+                    } catch (e) {
+                       
+                    }
+
+                    oErrorStrip.setText(sErrorMsg);
                     oErrorStrip.setVisible(true);
-                }
-            }.bind(this), 1000);
+                }.bind(this)
+            });
         },
 
+        onRegister: function () {
+            var oRouter = this.getOwnerComponent().getRouter();
+            oRouter.navTo("Register");
+        },
+
+        
         onForgotPassword: function () {
-            MessageToast.show("Please contact your SAP system administrator to reset your password.");
+            var oView = this.getView();
+
+          
+            if (!this._pResetPasswordDialog) {
+                this._pResetPasswordDialog = Fragment.load({
+                    id: oView.getId(),
+                    name: "purchaseordertracking.zpomanagementapp.view.fragments.ResetPasswordDialog",
+                    controller: this
+                }).then(function (oDialog) {
+                    oView.addDependent(oDialog);
+                    return oDialog;
+                });
+            }
+
+            this._pResetPasswordDialog.then(function (oDialog) {
+                oDialog.open();
+            });
+        },
+
+        _handlePasswordResetSubmit: function () {
+            var sUsername = this.byId("resetUsernameInput").getValue();
+            var sNewPassword = this.byId("resetNewPasswordInput").getValue();
+            var sConfirmPassword = this.byId("resetConfirmPasswordInput").getValue();
+            if (!sUsername || !sNewPassword || !sConfirmPassword) {
+                MessageBox.error("Please fill in all mandatory fields.");
+                return;
+            }
+            if (sNewPassword !== sConfirmPassword) {
+                MessageBox.error("The new passwords do not match. Please re-enter.");
+                return;
+            }
+            if (sNewPassword.length < 8) {
+                MessageBox.warning("Password must be at least 8 characters long.");
+                return;
+            }
+            this._onCloseResetDialog();
+            MessageToast.show("Password updated successfully! Please sign in.", {
+                duration: 4000
+            });
+        
+            this.byId("usernameInput").setValue(sUsername);
+            this.byId("passwordInput").setValue("");
+        },
+
+        _onCloseResetDialog: function () {
+            this._pResetPasswordDialog.then(function (oDialog) {
+                oDialog.close();
+            });
         }
+
     });
 });
+
