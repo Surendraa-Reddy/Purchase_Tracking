@@ -14,7 +14,6 @@ sap.ui.define([
             "USD": 83.5,  // 1 USD ≈ 83.5 INR
             "EUR": 90.2   // 1 EUR ≈ 90.2 INR
         },
-
         onInit: function () {
             var oKPIModel = new JSONModel({
                 totalCount: 0,
@@ -56,41 +55,35 @@ sap.ui.define([
                         }
                         mStatusCounts[oItem.Status] = (mStatusCounts[oItem.Status] || 0) + 1;
 
-                        // Extract amount & document currency
                         var fAmt = parseFloat(oItem.TotalAmount || 0);
                         var sDocCurrency = (oItem.Currency || "INR").toUpperCase();
 
-                        // Convert USD/EUR or other currencies to INR
                         var fExchangeRate = this._exchangeRatesToINR[sDocCurrency] || 1.0;
                         var fAmtInINR = fAmt * fExchangeRate;
 
-                        // Accumulate overall total in INR
                         fTotalValINR += fAmtInINR;
 
-                        // Accumulate vendor spend in INR
+ 
                         if (oItem.VendorId) {
                             mVendorSpend[oItem.VendorId] = (mVendorSpend[oItem.VendorId] || 0) + fAmtInINR;
                         }
                     }.bind(this));
 
-                    // Structure data for status chart
                     var aStatusData = Object.keys(mStatusCounts).map(function (sKey) {
                         return { Status: sKey, Count: mStatusCounts[sKey] };
                     });
 
-                    // Structure data for vendor chart (rounded to 2 decimals)
+
                     var aVendorData = Object.keys(mVendorSpend).map(function (sKey) {
                         return { VendorId: sKey, Amount: parseFloat(mVendorSpend[sKey].toFixed(2)) };
                     });
 
-                    // Format total amount in INR standard currency format (₹)
                     var sFormattedINR = new Intl.NumberFormat('en-IN', {
                         style: 'currency',
                         currency: 'INR',
                         maximumFractionDigits: 2
                     }).format(fTotalValINR);
 
-                    // Update KPI Model
                     oKPIModel.setProperty("/totalCount", iTotalCount);
                     oKPIModel.setProperty("/openCount", iOpenCount);
                     oKPIModel.setProperty("/completedCount", iCompletedCount);
@@ -99,7 +92,7 @@ sap.ui.define([
                     oKPIModel.setProperty("/vendorData", aVendorData);
                 }.bind(this),
                 error: function (oError) {
-                    // Handle OData error
+                  
                 }
             });
         },
