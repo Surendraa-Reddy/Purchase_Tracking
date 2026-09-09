@@ -26,13 +26,11 @@ sap.ui.define([
             var sPassword = oPasswordInput.getValue().trim();
             var sConfirmPassword = oConfirmPasswordInput.getValue().trim();
 
-            // Reset UI states
             oUsernameInput.setValueState(ValueState.None);
             oPasswordInput.setValueState(ValueState.None);
             oConfirmPasswordInput.setValueState(ValueState.None);
             oErrorStrip.setVisible(false);
 
-            // 1. Frontend Validations
             var bValid = true;
 
             if (!sUsername) {
@@ -65,13 +63,12 @@ sap.ui.define([
 
             this.getView().setBusy(true);
 
-            // 2. Prepare OData Payload (Field names must match SEGW metadata)
+          
             var oPayload = {
                 UserName: sUsername,
                 Password: sPassword
             };
 
-            // 3. Call OData Model Create Operation
             var oModel = this.getOwnerComponent().getModel();
 
             oModel.create("/UserSet", oPayload, {
@@ -95,7 +92,7 @@ sap.ui.define([
                         var oResponse = JSON.parse(oError.responseText);
                         sErrorMsg = oResponse.error.message.value;
                     } catch (e) {
-                        // Keep fallback error message
+                       
                     }
 
                     oErrorStrip.setText(sErrorMsg);
