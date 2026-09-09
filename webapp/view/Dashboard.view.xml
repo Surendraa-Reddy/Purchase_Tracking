@@ -19,7 +19,6 @@
     >
         <content>
             <VBox class="sapUiSmallMargin">
-                
                 <layout:Grid
                     defaultSpan="XL3 L3 M6 S12"
                     class="sapUiSmallMarginBottom"
@@ -72,29 +71,33 @@
                             />
                         </TileContent>
                     </GenericTile>
-
-                    <GenericTile
-                        header="Total Commit Spend"
-                        subheader="Overall Value"
-                        frameType="OneByOne"
-                        press=".onTilePress"
-                        class="sapUiTinyMarginBottom"
+                    <layout:Grid
+                        defaultSpan="XL6 L6 M12 S12"
+                        class="sapUiSmallMarginBottom"
                     >
-                        <TileContent unit="USD">
-                            <NumericContent
-                                value="{kpiModel>/totalValue}"
-                                truncateValueTo="12"
-                                valueColor="Good"
-                                icon="sap-icon://lead"
-                            />
-                        </TileContent>
-                    </GenericTile>
+                        <GenericTile
+                            header="Total Commit Spend"
+                            subheader="Overall Value"
+                            frameType="OneByOne"
+                            press=".onTilePress"
+                            class="sapUiTinyMarginBottom"
+                        >
+                            <TileContent unit="INR">
+                                <NumericContent
+                                    value="{kpiModel>/totalValue}"
+                                    truncateValueTo="10"
+                                    valueColor="Good"
+                                    icon="sap-icon://lead"
+                                />
+                            </TileContent>
+                        </GenericTile>
+                    </layout:Grid>
                 </layout:Grid>
+
                 <layout:Grid
                     defaultSpan="XL6 L6 M12 S12"
                     class="sapUiSmallMarginBottom"
                 >
-                    
                     <Panel
                         headerText="Order Status Distribution"
                         class="sapUiNoContentPadding"
@@ -139,9 +142,8 @@
                         </viz:VizFrame>
                     </Panel>
 
-                 
                     <Panel
-                        headerText="Top Vendor Commitments"
+                        headerText="Top Vendor Commitments (INR)"
                         class="sapUiNoContentPadding"
                     >
                         <viz:VizFrame
@@ -234,6 +236,7 @@
 
                                     <ObjectNumber
                                         number="{TotalAmount}"
+                                        unit="{Currency}"
                                         state="{= ${Status} === 'OPEN' ? 'Warning' : ${Status} === 'COMPLETED' ? 'Success' : 'None'}"
                                     />
 
