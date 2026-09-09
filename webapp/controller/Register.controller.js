@@ -76,12 +76,12 @@ sap.ui.define([
                     this.getView().setBusy(false);
                     MessageToast.show("Account created successfully! Please sign in.");
 
-                    // Reset form fields
+                   
                     oUsernameInput.setValue("");
                     oPasswordInput.setValue("");
                     oConfirmPasswordInput.setValue("");
 
-                    // Navigate back to Login view
+                    
                     this.onNavBack();
                 }.bind(this),
                 error: function (oError) {
