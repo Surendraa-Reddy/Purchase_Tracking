@@ -133,7 +133,6 @@
         </uxap:headerContent>
 
         <uxap:sections>
-       
             <uxap:ObjectPageSection
                 titleUppercase="false"
                 id="itemsSection"
@@ -158,6 +157,13 @@
                                             level="H4"
                                         />
                                         <ToolbarSpacer />
+                                        <Button
+                                            icon="sap-icon://add"
+                                            text="Create"
+                                            type="Emphasized"
+                                            tooltip="Create Line Item"
+                                            press=".onCreateItem"
+                                        />
                                         <Button
                                             icon="sap-icon://action-settings"
                                             tooltip="Table Personalization"
@@ -193,6 +199,12 @@
                                         hAlign="End"
                                     >
                                         <Text text="Net Value" />
+                                    </Column>
+                                    <Column
+                                        importance="High"
+                                        hAlign="End"
+                                    >
+                                        <Text text="Action" />
                                     </Column>
                                 </columns>
 
@@ -243,6 +255,20 @@
                                                 }"
                                                 unit="{Currency}"
                                             />
+                                            <HBox justifyContent="End">
+                                                <Button
+                                                    icon="sap-icon://edit"
+                                                    type="Transparent"
+                                                    press=".onEditPoItem"
+                                                    tooltip="Edit PO"
+                                                />
+                                                <Button
+                                                    icon="sap-icon://delete"
+                                                    type="Transparent"
+                                                    press=".onDeletePo"
+                                                    tooltip="Delete PO"
+                                                />
+                                            </HBox>
                                         </cells>
                                     </ColumnListItem>
                                 </items>

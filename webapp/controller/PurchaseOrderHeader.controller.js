@@ -3,8 +3,9 @@ sap.ui.define([
     "sap/ui/model/Filter",
     "sap/ui/model/FilterOperator",
     "sap/m/MessageToast",
+    "sap/ui/core/Fragment",
     "sap/m/MessageBox"
-], function (Controller, Filter, FilterOperator, MessageToast, MessageBox) {
+], function (Controller, Filter, FilterOperator, MessageToast,Fragment, MessageBox) {
     "use strict";
 
     return Controller.extend("purchaseordertracking.zpomanagementapp.controller.PurchaseOrderHeader", {
@@ -19,7 +20,7 @@ sap.ui.define([
 
 
             if (sPoId) {
-                aFilters.push(new sap.ui.model.Filter("PoId", sap.ui.model.FilterOperator.Contains, sQuery));
+                aFilters.push(new Filter("PoId", FilterOperator.Contains, sPoId));
             }
 
 
@@ -69,7 +70,90 @@ sap.ui.define([
 
         onCreatePo: function () {
             var oRouter = this.getOwnerComponent().getRouter();
-            oRouter.navTo("CreatePoHeader"); 
+            oRouter.navTo("CreatePoHeader");
+        },
+        onEditPo: function (oEvent) {
+            var oMenuItem = oEvent.getSource();
+            var oContext = oMenuItem.getBindingContext();
+            if (!oContext) {
+                MessageBox.error("Unable to locate item context.");
+                return;
+            }
+            this._sEditPath = oContext.getPath(); 
+            var oView = this.getView();
+            if (!this._oEditPoDialog) {
+                Fragment.load({
+                    id: oView.getId(),
+                    name: "purchaseordertracking.zpomanagementapp.view.fragments.EditPoDialog",
+                    controller: this
+                }).then(function (oDialog) {
+                    this._oEditPoDialog = oDialog;
+                    oView.addDependent(this._oEditPoDialog);
+                    this._oEditPoDialog.bindElement(this._sEditPath);
+                    this._oEditPoDialog.open();
+                }.bind(this));
+            } else {
+                this._oEditPoDialog.bindElement(this._sEditPath);
+                this._oEditPoDialog.open();
+            }
+        },
+
+  
+        onCloseEditPoDialog: function () {
+            if (this._oEditPoDialog) {
+                this._oEditPoDialog.close();
+            }
+        },
+
+        onSaveEditPo: function () {
+            var oModel = this.getView().getModel();
+
+            var oVendorInput = this.byId("editVendorId");
+            var sVendorId = oVendorInput ? oVendorInput.getValue().trim() : "";
+            var sCompanyCode = this.byId("editCompanyCode").getValue().trim();
+            var sPurOrg = this.byId("editPurOrg").getValue().trim();
+            var sPurGroup = this.byId("editPurGroup").getValue().trim();
+            var sStatus = this.byId("editStatus").getSelectedKey();
+            var sCurrency = this.byId("editCurrency") ? this.byId("editCurrency").getValue().trim() : "";
+            if (!sVendorId) {
+                oVendorInput.setValueState("Error");
+                oVendorInput.setValueStateText("Vendor ID is required.");
+                MessageBox.error("Please enter a Vendor ID.");
+                return;
+            } else {
+                oVendorInput.setValueState("None");
+            }
+
+            var oPayload = {
+                VendorId: sVendorId,
+                CompanyCode: sCompanyCode,
+                PurOrg: sPurOrg,
+                PurGroup: sPurGroup,
+                Status: sStatus,
+                Currency: sCurrency
+            };
+      
+            oModel.update(this._sEditPath, oPayload, {
+                success: function () {
+                    MessageToast.show("Purchase Order updated successfully!");
+                    this.onCloseEditPoDialog();
+                    this.byId("managePoTable").getBinding("items").refresh();
+                }.bind(this),
+                error: function (oError) {
+                    MessageBox.error("Failed to update Purchase Order. Check backend logs.");
+                }
+            });
+        },
+
+        onViewItems: function (oEvent) {
+            var oMenuItem = oEvent.getSource();
+            var oContext = oMenuItem.getBindingContext();
+            var sPoId = oContext.getProperty("PoId");
+
+            var oRouter = this.getOwnerComponent().getRouter();
+            oRouter.navTo("Poitems", {
+                poId: sPoId
+            });
         },
 
         onDeleteSelected: function () {

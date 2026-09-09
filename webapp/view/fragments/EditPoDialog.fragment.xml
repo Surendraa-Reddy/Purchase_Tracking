@@ -1,0 +1,101 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:f="sap.ui.layout.form"
+>
+    <Dialog
+        id="editPoDialog"
+        title="Edit Purchase Order"
+        contentWidth="500px"
+    >
+        <content>
+            <f:SimpleForm
+                editable="true"
+                layout="ColumnLayout"
+                columnsM="1"
+                columnsL="1"
+            >
+                <f:content>
+                    <Label text="PO ID" />
+                    <Input
+                        id="editPoId"
+                        value="{PoId}"
+                        editable="false"
+                    />
+
+                    <Label
+                        text="Vendor ID"
+                        required="true"
+                    />
+                    <Input
+                        id="editVendorId"
+                        value="{VendorId}"
+                        maxLength="10"
+                    />
+
+                    <Label text="Company Code" />
+                    <Input
+                        id="editCompanyCode"
+                        value="{CompanyCode}"
+                        maxLength="4"
+                    />
+
+                    <Label text="Purch. Org" />
+                    <Input
+                        id="editPurOrg"
+                        value="{PurOrg}"
+                        maxLength="4"
+                    />
+
+                    <Label text="Purch. Group" />
+                    <Input
+                        id="editPurGroup"
+                        value="{PurGroup}"
+                        maxLength="3"
+                    />
+                    <Label text="Currency" />
+                    <Input
+                        id="editCurrency"
+                        value="{Currency}"
+                        maxLength="3"
+                       editable="true"
+                    />
+
+                    <Label text="Status" />
+                    <Select
+                        id="editStatus"
+                        selectedKey="{Status}"
+                    >
+                        <items>
+                            <core:Item
+                                key="OPEN"
+                                text="Open"
+                            />
+                            <core:Item
+                                key="PARTIALLY RECEIVED"
+                                text="Partially Received"
+                            />
+                            <core:Item
+                                key="COMPLETED"
+                                text="Completed"
+                            />
+                        </items>
+                    </Select>
+                </f:content>
+            </f:SimpleForm>
+        </content>
+        <beginButton>
+            <Button
+                text="Save"
+                type="Emphasized"
+                press=".onSaveEditPo"
+            />
+        </beginButton>
+        <endButton>
+            <Button
+                text="Cancel"
+                press=".onCloseEditPoDialog"
+            />
+        </endButton>
+    </Dialog>
+</core:FragmentDefinition>
