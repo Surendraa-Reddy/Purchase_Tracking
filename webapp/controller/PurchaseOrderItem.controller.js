@@ -299,18 +299,50 @@ sap.ui.define([
                 success: function () {
                     MessageToast.show("Line item updated successfully!");
 
-                    // Close the dialog safely
                     this.onCloseEditItemDialog();
 
-                    // Refresh table items binding safely using external reference or bound context
+                    oModel.refresh(true);
+
+
                     if (oTable && oTable.getBinding("items")) {
                         oTable.getBinding("items").refresh();
                     }
-                }.bind(this), // <--- .bind(this) ensures 'this' refers to the Controller inside callback
+                }.bind(this),
 
                 error: function (oError) {
                     MessageBox.error("Failed to update line item.");
                 }
+            });
+        },
+        onDeletePoItem: function (oEvent) {
+            var oModel = this.getView().getModel();
+            var oItem = oEvent.getSource().getBindingContext();
+
+            if (!oItem) {
+                MessageBox.error("Unable to locate item context.");
+                return;
+            }
+
+            var sItemPath = oItem.getPath();
+            var sItemNo = oItem.getProperty("ItemNo");
+
+            MessageBox.confirm("Are you sure you want to delete item " + sItemNo + "?", {
+                actions: [MessageBox.Action.OK, MessageBox.Action.CANCEL],
+                onClose: function (oAction) {
+                    if (oAction === MessageBox.Action.OK) {
+                        oModel.remove(sItemPath, {
+                            success: function () {
+                                MessageToast.show("Line item deleted successfully.");
+
+                                // Force refresh model to pull updated table items and header total
+                                oModel.refresh(true);
+                            },
+                            error: function (oError) {
+                                MessageBox.error("Failed to delete line item. Please check backend logs.");
+                            }
+                        });
+                    }
+                }.bind(this)
             });
         },
         onNavBack: function () {
