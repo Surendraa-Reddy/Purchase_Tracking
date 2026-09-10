@@ -5,7 +5,7 @@ sap.ui.define([
     "sap/m/MessageToast",
     "sap/ui/core/Fragment",
     "sap/m/MessageBox"
-], function (Controller, Filter, FilterOperator, MessageToast,Fragment, MessageBox) {
+], function (Controller, Filter, FilterOperator, MessageToast, Fragment, MessageBox) {
     "use strict";
 
     return Controller.extend("purchaseordertracking.zpomanagementapp.controller.PurchaseOrderHeader", {
@@ -79,7 +79,7 @@ sap.ui.define([
                 MessageBox.error("Unable to locate item context.");
                 return;
             }
-            this._sEditPath = oContext.getPath(); 
+            this._sEditPath = oContext.getPath();
             var oView = this.getView();
             if (!this._oEditPoDialog) {
                 Fragment.load({
@@ -98,7 +98,7 @@ sap.ui.define([
             }
         },
 
-  
+
         onCloseEditPoDialog: function () {
             if (this._oEditPoDialog) {
                 this._oEditPoDialog.close();
@@ -132,7 +132,7 @@ sap.ui.define([
                 Status: sStatus,
                 Currency: sCurrency
             };
-      
+
             oModel.update(this._sEditPath, oPayload, {
                 success: function () {
                     MessageToast.show("Purchase Order updated successfully!");
@@ -159,21 +159,54 @@ sap.ui.define([
         onDeleteSelected: function () {
             var oTable = this.byId("managePoTable");
             var aSelectedItems = oTable.getSelectedItems();
+            var oModel = this.getView().getModel();
 
             if (aSelectedItems.length === 0) {
                 MessageBox.warning("Please select at least one Purchase Order to delete.");
                 return;
             }
 
-            MessageBox.confirm("Are you sure you want to delete the selected item(s)?", {
+            MessageBox.confirm("Are you sure you want to delete the selected Purchase Order(s)?", {
+                actions: [MessageBox.Action.OK, MessageBox.Action.CANCEL],
                 onClose: function (oAction) {
                     if (oAction === MessageBox.Action.OK) {
-                        MessageToast.show(aSelectedItems.length + " PO(s) deleted.");
+                        var iTotal = aSelectedItems.length;
+                        var iSuccessCount = 0;
+                        var iErrorCount = 0;
+
+                        // Loop through selected table items and trigger backend deletion
+                        aSelectedItems.forEach(function (oItem) {
+                            var sPath = oItem.getBindingContext().getPath();
+
+                            oModel.remove(sPath, {
+                                success: function () {
+                                    iSuccessCount++;
+                                    this._checkDeleteCompletion(iSuccessCount, iErrorCount, iTotal, oTable, oModel);
+                                }.bind(this),
+                                error: function () {
+                                    iErrorCount++;
+                                    this._checkDeleteCompletion(iSuccessCount, iErrorCount, iTotal, oTable, oModel);
+                                }.bind(this)
+                            });
+                        }.bind(this));
                     }
-                }
+                }.bind(this)
             });
         },
 
+        _checkDeleteCompletion: function (iSuccess, iError, iTotal, oTable, oModel) {
+            if (iSuccess + iError === iTotal) {
+                if (iError === 0) {
+                    MessageToast.show(iSuccess + " Purchase Order(s) deleted successfully.");
+                } else {
+                    MessageBox.error(iError + " out of " + iTotal + " items failed to delete.");
+                }
+
+                
+                oTable.removeSelections(true);
+                oModel.refresh(true);
+            }
+        },
         onPoSelect: function (oEvent) {
             var oSelectedItem = oEvent.getSource();
             var oContext = oSelectedItem.getBindingContext();
