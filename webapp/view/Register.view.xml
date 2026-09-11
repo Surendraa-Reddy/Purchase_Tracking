@@ -35,7 +35,7 @@
                         class="sapUiSmallMarginBottom"
                     />
 
-                    <!-- Username Field -->
+                  
                     <Label
                         text="Username / User ID"
                         required="true"
@@ -47,7 +47,6 @@
                         class="sapUiSmallMarginBottom"
                     />
 
-                    <!-- Password Field -->
                     <Label
                         text="Password"
                         required="true"
@@ -60,7 +59,7 @@
                         class="sapUiSmallMarginBottom"
                     />
 
-                    <!-- Confirm Password Field -->
+                 
                     <Label
                         text="Confirm Password"
                         required="true"
@@ -74,7 +73,6 @@
                         class="sapUiMediumMarginBottom"
                     />
 
-                    <!-- Submit Button -->
                     <Button
                         id="btnRegister"
                         text="Create Account"
@@ -85,7 +83,7 @@
                         class="sapUiSmallMarginBottom"
                     />
 
-                    <!-- Navigation Link Back to Login -->
+                    
                     <FlexBox justifyContent="Center">
                         <Link
                             text="Already have an account? Sign In"
