@@ -6,16 +6,31 @@
     <Dialog
         id="editPoItemDialog"
         title="Edit Purchase Order Line Item"
-        contentWidth="500px"
+        contentWidth="620px"
+        draggable="true"
+        resizable="true"
     >
         <content>
             <f:SimpleForm
                 editable="true"
-                layout="ColumnLayout"
+                layout="ResponsiveGridLayout"
+                labelSpanXL="4"
+                labelSpanL="4"
+                labelSpanM="4"
+                labelSpanS="12"
+                adjustLabelSpan="false"
+                emptySpanXL="0"
+                emptySpanL="0"
+                emptySpanM="0"
+                emptySpanS="0"
+                columnsXL="2"
+                columnsL="2"
                 columnsM="1"
-                columnsL="1"
             >
                 <f:content>
+                    <!-- General Details -->
+                    <core:Title text="General Information" />
+
                     <Label text="PO ID" />
                     <Input
                         id="editPoIdItem"
@@ -23,7 +38,7 @@
                         editable="false"
                     />
 
-                    <Label text="Item No" />
+                    <Label text="Item No." />
                     <Input
                         id="editItemNo"
                         value="{ItemNo}"
@@ -38,70 +53,88 @@
                         id="editMaterial"
                         value="{Material}"
                         maxLength="40"
+                        placeholder="Enter Material"
                     />
 
-                    <Label text="Material Desc" />
+                    <Label text="Description" />
                     <Input
                         id="editMaterialDesc"
                         value="{MaterialDesc}"
                         maxLength="40"
+                        placeholder="Enter Description"
                     />
-
-                    <Label text="Plant" />
-                    <Input
-                        id="editPlant"
-                        value="{Plant}"
-                        maxLength="4"
-                    />
-
-                    <Label text="Storage Location" />
-                    <Input
-                        id="editStorageLoc"
-                        value="{StorageLoc}"
-                        maxLength="4"
-                    />
-
-                    <Label
-                        text="Quantity"
-                        required="true"
-                    />
-                    <Input
-                        id="editQuantity"
-                        value="{Quantity}"
-                        type="Number"
-                    />
-
-                    <Label text="Unit" />
-                    <Input
-                        id="editUnit"
-                        value="{Unit}"
-                        maxLength="3"
-                    />
-
-                    <Label
-                        text="Net Price"
-                        required="true"
-                    />
-                    <Input
-                        id="editNetPrice"
-                        value="{NetPrice}"
-                        type="Number"
-                    />
-
-                    <Label text="Currency" />
-                    <Input
-                        id="editCurrency"
-                        value="{Currency}"
-                        maxLength="5"
-                    />
-
                     <Label text="Delivery Date" />
                     <DatePicker
                         id="editDeliveryDate"
-                        value="{DeliveryDate}"
-                        displayFormat="yyyy-MM-dd"
-                        valueFormat="yyyy-MM-dd"
+                        dateValue="{DeliveryDate}"
+                        displayFormat="dd-MMM-yyyy"
+                        placeholder="DD-MMM-YYYY"
                     />
+
+                    <core:Title text="Logistics &amp; Pricing" />
+
+                    <Label text="Plant / Storage Loc." />
+                    <HBox renderType="Bare">
+                        <Input
+                            id="editPlant"
+                            value="{Plant}"
+                            maxLength="4"
+                            placeholder="Plant"
+                            width="50%"
+                            class="sapUiTinyMarginEnd"
+                        />
+                        <Input
+                            id="editStorageLoc"
+                            value="{StorageLoc}"
+                            maxLength="4"
+                            placeholder="S.Loc"
+                            width="50%"
+                        />
+                    </HBox>
+
+                    <Label
+                        text="Quantity / Unit"
+                        required="true"
+                    />
+                    <HBox renderType="Bare">
+                        <Input
+                            id="editQuantity"
+                            value="{Quantity}"
+                            type="Number"
+                            placeholder="Qty"
+                            width="65%"
+                            class="sapUiTinyMarginEnd"
+                        />
+                        <Input
+                            id="editUnit"
+                            value="{Unit}"
+                            maxLength="3"
+                            placeholder="Unit"
+                            width="35%"
+                        />
+                    </HBox>
+
+                    <Label
+                        text="Net Price / Currency"
+                        required="true"
+                    />
+                    <HBox renderType="Bare">
+                        <Input
+                            id="editNetPrice"
+                            value="{NetPrice}"
+                            type="Number"
+                            placeholder="Price"
+                            width="65%"
+                            class="sapUiTinyMarginEnd"
+                        />
+                        <Input
+                            id="editCurrency"
+                            value="{Currency}"
+                            maxLength="5"
+                            placeholder="Curr."
+                            width="35%"
+                        />
+                    </HBox>
                 </f:content>
             </f:SimpleForm>
         </content>
@@ -115,6 +148,7 @@
         <endButton>
             <Button
                 text="Cancel"
+                type="Transparent"
                 press=".onCloseEditItemDialog"
             />
         </endButton>
