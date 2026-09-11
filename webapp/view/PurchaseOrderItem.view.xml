@@ -13,7 +13,6 @@
         showTitleInHeaderContent="true"
         showHeaderContent="true"
     >
-        <!-- ==================== HEADER TITLE BAR ==================== -->
         <uxap:headerTitle>
             <uxap:ObjectPageDynamicHeaderTitle>
                 <uxap:expandedHeading>
@@ -71,7 +70,6 @@
             </uxap:ObjectPageDynamicHeaderTitle>
         </uxap:headerTitle>
 
-        <!-- ==================== HEADER CONTENT ==================== -->
         <uxap:headerContent>
             <FlexBox
                 wrap="Wrap"
@@ -265,7 +263,7 @@
                                                 <Button
                                                     icon="sap-icon://delete"
                                                     type="Transparent"
-                                                    press=".onDeletePo"
+                                                    press=".onDeletePoItem"
                                                     tooltip="Delete PO"
                                                 />
                                             </HBox>
@@ -281,7 +279,7 @@
                 titleUppercase="false"
                 id="generalSection"
                 title="General Details"
-            >
+             >
                 <uxap:subSections>
                     <uxap:ObjectPageSubSection id="generalSubSection">
                         <uxap:blocks>
