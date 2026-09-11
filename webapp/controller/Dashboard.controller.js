@@ -8,12 +8,12 @@ sap.ui.define([
 
     return Controller.extend("purchaseordertracking.zpomanagementapp.controller.Dashboard", {
 
-        
         _exchangeRatesToINR: {
             "INR": 1.0,
-            "USD": 83.5,  // 1 USD ≈ 83.5 INR
-            "EUR": 90.2   // 1 EUR ≈ 90.2 INR
+            "USD": 83.5,
+            "EUR": 90.2
         },
+
         onInit: function () {
             var oKPIModel = new JSONModel({
                 totalCount: 0,
@@ -25,15 +25,43 @@ sap.ui.define([
             });
             this.getView().setModel(oKPIModel, "kpiModel");
 
+            var oRouter = this.getOwnerComponent().getRouter();
+            if (oRouter.getRoute("Dashboard")) {
+                oRouter.getRoute("Dashboard").attachPatternMatched(this._onRouteMatched, this);
+            } else if (oRouter.getRoute("RouteDashboard")) {
+                oRouter.getRoute("RouteDashboard").attachPatternMatched(this._onRouteMatched, this);
+            }
+        },
+
+        _onRouteMatched: function () {
+            this.refreshAllDashboardData();
+        },
+
+        refreshAllDashboardData: function () {
             var oModel = this.getOwnerComponent().getModel();
+
             if (oModel) {
-                oModel.metadataLoaded().then(this._calculateKPIsAndCharts.bind(this));
+             
+                oModel.refresh(true);
+            }
+
+            this._calculateKPIsAndCharts();
+            var oTable = this.byId("recentPOTable");
+            if (oTable) {
+                var oBinding = oTable.getBinding("items");
+                if (oBinding) {
+                    oBinding.refresh(true);
+                }
             }
         },
 
         _calculateKPIsAndCharts: function () {
             var oModel = this.getOwnerComponent().getModel();
             var oKPIModel = this.getView().getModel("kpiModel");
+
+            if (!oModel) {
+                return;
+            }
 
             oModel.read("/POHeaderSet", {
                 success: function (oData) {
@@ -47,13 +75,15 @@ sap.ui.define([
                     var mVendorSpend = {};
 
                     aResults.forEach(function (oItem) {
-                     
                         if (oItem.Status === "OPEN") {
                             iOpenCount++;
                         } else if (oItem.Status === "COMPLETED") {
                             iCompletedCount++;
                         }
-                        mStatusCounts[oItem.Status] = (mStatusCounts[oItem.Status] || 0) + 1;
+
+                        if (oItem.Status) {
+                            mStatusCounts[oItem.Status] = (mStatusCounts[oItem.Status] || 0) + 1;
+                        }
 
                         var fAmt = parseFloat(oItem.TotalAmount || 0);
                         var sDocCurrency = (oItem.Currency || "INR").toUpperCase();
@@ -63,7 +93,6 @@ sap.ui.define([
 
                         fTotalValINR += fAmtInINR;
 
- 
                         if (oItem.VendorId) {
                             mVendorSpend[oItem.VendorId] = (mVendorSpend[oItem.VendorId] || 0) + fAmtInINR;
                         }
@@ -72,7 +101,6 @@ sap.ui.define([
                     var aStatusData = Object.keys(mStatusCounts).map(function (sKey) {
                         return { Status: sKey, Count: mStatusCounts[sKey] };
                     });
-
 
                     var aVendorData = Object.keys(mVendorSpend).map(function (sKey) {
                         return { VendorId: sKey, Amount: parseFloat(mVendorSpend[sKey].toFixed(2)) };
@@ -90,9 +118,10 @@ sap.ui.define([
                     oKPIModel.setProperty("/totalValue", sFormattedINR);
                     oKPIModel.setProperty("/statusData", aStatusData);
                     oKPIModel.setProperty("/vendorData", aVendorData);
+
                 }.bind(this),
                 error: function (oError) {
-                  
+                    
                 }
             });
         },
@@ -127,12 +156,7 @@ sap.ui.define([
         },
 
         onRefreshDashboard: function () {
-            this._calculateKPIsAndCharts();
-            var oTable = this.byId("recentPOTable");
-            var oBinding = oTable.getBinding("items");
-            if (oBinding) {
-                oBinding.refresh();
-            }
+            this.refreshAllDashboardData();
         }
     });
 });
