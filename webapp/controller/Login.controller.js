@@ -27,8 +27,6 @@ sap.ui.define([
             oUsernameInput.setValueState(ValueState.None);
             oPasswordInput.setValueState(ValueState.None);
             oErrorStrip.setVisible(false);
-
-            // 1. Input Validation
             var bValid = true;
             if (!sUsername) {
                 oUsernameInput.setValueState(ValueState.Error);
