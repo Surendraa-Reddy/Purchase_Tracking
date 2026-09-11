@@ -9,6 +9,49 @@ sap.ui.define([
     "use strict";
 
     return Controller.extend("purchaseordertracking.zpomanagementapp.controller.PurchaseOrderHeader", {
+        onInit: function () {
+            var oRouter = this.getOwnerComponent().getRouter();
+            var oRoute = oRouter.getRoute("Dashboard");
+
+            if (oRoute) {
+                oRoute.attachPatternMatched(this._onRouteMatched, this);
+            }
+        },
+
+        _onRouteMatched: function (oEvent) {
+            this.refreshDashboardData();
+        },
+
+        refreshDashboardData: function () {
+            var oView = this.getView();
+
+            var oModel = oView.getModel();
+
+            if (!oModel) {
+                console.warn("No model found on view.");
+                return;
+            }
+
+            if (typeof oModel.refresh === "function") {
+               
+                oModel.refresh(true, true);
+            }
+
+         
+            var aControls = oView.findAggregatedObjects(true);
+            aControls.forEach(function (oControl) {
+                if (typeof oControl.getBinding === "function") {
+                    var oBinding = oControl.getBinding("items") ||
+                        oControl.getBinding("rows") ||
+                        oControl.getBinding("value");
+                    if (oBinding && typeof oBinding.refresh === "function") {
+                        oBinding.refresh(true);
+                    }
+                }
+            });
+
+            MessageToast.show("Dashboard data updated.");
+        },
 
         onSearch: function () {
             var aFilters = [];
@@ -202,7 +245,7 @@ sap.ui.define([
                     MessageBox.error(iError + " out of " + iTotal + " items failed to delete.");
                 }
 
-                
+
                 oTable.removeSelections(true);
                 oModel.refresh(true);
             }
