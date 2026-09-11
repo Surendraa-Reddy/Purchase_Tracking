@@ -4,8 +4,9 @@ sap.ui.define([
     "sap/ui/model/FilterOperator",
     "sap/m/MessageToast",
     "sap/ui/core/Fragment",
-    "sap/m/MessageBox"
-], function (Controller, Filter, FilterOperator, MessageToast, Fragment, MessageBox) {
+    "sap/m/MessageBox",
+    "sap/ui/export/Spreadsheet"
+], function (Controller, Filter, FilterOperator, MessageToast, Fragment, MessageBox, Spreadsheet) {
     "use strict";
 
     return Controller.extend("purchaseordertracking.zpomanagementapp.controller.PurchaseOrderHeader", {
@@ -33,11 +34,11 @@ sap.ui.define([
             }
 
             if (typeof oModel.refresh === "function") {
-               
+
                 oModel.refresh(true, true);
             }
 
-         
+
             var aControls = oView.findAggregatedObjects(true);
             aControls.forEach(function (oControl) {
                 if (typeof oControl.getBinding === "function") {
@@ -216,8 +217,6 @@ sap.ui.define([
                         var iTotal = aSelectedItems.length;
                         var iSuccessCount = 0;
                         var iErrorCount = 0;
-
-                        // Loop through selected table items and trigger backend deletion
                         aSelectedItems.forEach(function (oItem) {
                             var sPath = oItem.getBindingContext().getPath();
 
@@ -260,6 +259,97 @@ sap.ui.define([
             oRouter.navTo("Poitems", {
                 poId: sPoId
             });
+        },
+        _createColumnConfig: function () {
+            return [
+                {
+                    label: "PO Number",
+                    property: "PoId",
+                    type: "string"
+                },
+                {
+                    label: "Vendor ID",
+                    property: "VendorId",
+                    type: "string"
+                },
+                 {
+                    label: "Purchasing Org",
+                    property: "PurOrg",
+                    type: "string"
+                },
+                 {
+                    label: "Purchasing Date",
+                    property: "PoDate",
+                    type: "date"
+                },
+                {
+                    label: "Purchasing Group",
+                    property: "PurGroup",
+                    type: "string"
+                },
+                {
+                    label: "Total Amount",
+                    property: "TotalAmount",
+                    type: "number",
+                    scale: 2
+                },
+                {
+                    label: "Currency",
+                    property: "Currency",
+                    type: "string"
+                },
+                {
+                    label: "Status",
+                    property: "Status",
+                    type: "string"
+                }
+            ];
+        },
+
+        onExportExcel: function () {
+            var oTable = this.byId("managePoTable");
+            if (!oTable) {
+                MessageBox.error("Table not found.");
+                return;
+            }
+
+            var oBinding = oTable.getBinding("items");
+            if (!oBinding) {
+                MessageBox.error("No binding found for export.");
+                return;
+            }
+
+            var oModel = oBinding.getModel();
+            var aCols = this._createColumnConfig();
+
+            var oSettings = {
+                workbook: {
+                    columns: aCols,
+                    hierarchyLevel: 'Level'
+                },
+                dataSource: {
+                    type: "odata",
+                    dataUrl: oBinding.getDownloadUrl ? oBinding.getDownloadUrl() : null,
+                    serviceUrl: oModel.sServiceUrl,
+                    headers: oModel.getHeaders ? oModel.getHeaders() : {},
+                    query: oBinding.sFilterParams,
+                    count: oBinding.getLength()
+                },
+                fileName: "Purchase_Orders_Export.xlsx",
+                worker: false
+            };
+
+            var oSheet = new Spreadsheet(oSettings);
+            oSheet.build()
+                .then(function () {
+                    MessageToast.show("Excel export successful.");
+                })
+                .catch(function (oError) {
+                    MessageBox.error("Excel export failed: " + oError);
+                })
+                .finally(function () {
+                    oSheet.destroy();
+                });
         },
         onNavToDashboard: function () {
             var oRouter = this.getOwnerComponent().getRouter();
