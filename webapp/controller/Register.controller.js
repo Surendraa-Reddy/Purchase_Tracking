@@ -8,7 +8,7 @@ sap.ui.define([
     return Controller.extend("purchaseordertracking.zpomanagementapp.controller.Register", {
 
         onInit: function () {
-            // Focus on username input when the view is loaded
+
             this.getView().addEventDelegate({
                 onAfterShow: function () {
                     this.byId("regUsernameInput").focus();
@@ -37,6 +37,10 @@ sap.ui.define([
                 oUsernameInput.setValueState(ValueState.Error);
                 oUsernameInput.setValueStateText("Username is required");
                 bValid = false;
+            } else if (!/^[a-zA-Z\s]+$/.test(sUsername)) {
+                oUsernameInput.setValueState(ValueState.Error);
+                oUsernameInput.setValueStateText("Username must contain only letters");
+                bValid = false;
             }
 
             if (!sPassword) {
@@ -63,7 +67,7 @@ sap.ui.define([
 
             this.getView().setBusy(true);
 
-          
+
             var oPayload = {
                 UserName: sUsername,
                 Password: sPassword
@@ -76,12 +80,12 @@ sap.ui.define([
                     this.getView().setBusy(false);
                     MessageToast.show("Account created successfully! Please sign in.");
 
-                   
+
                     oUsernameInput.setValue("");
                     oPasswordInput.setValue("");
                     oConfirmPasswordInput.setValue("");
 
-                    
+
                     this.onNavBack();
                 }.bind(this),
                 error: function (oError) {
@@ -92,7 +96,7 @@ sap.ui.define([
                         var oResponse = JSON.parse(oError.responseText);
                         sErrorMsg = oResponse.error.message.value;
                     } catch (e) {
-                       
+
                     }
 
                     oErrorStrip.setText(sErrorMsg);
