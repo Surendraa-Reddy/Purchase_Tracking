@@ -8,7 +8,7 @@ sap.ui.define([
 
     return Controller.extend("purchaseordertracking.zpomanagementapp.controller.Dashboard", {
 
-        // Exchange rates relative to 1 INR
+        
         _exchangeRatesToINR: {
             "INR": 1.0,
             "USD": 83.5,  // 1 USD ≈ 83.5 INR
@@ -47,7 +47,7 @@ sap.ui.define([
                     var mVendorSpend = {};
 
                     aResults.forEach(function (oItem) {
-                        // Count statuses
+                     
                         if (oItem.Status === "OPEN") {
                             iOpenCount++;
                         } else if (oItem.Status === "COMPLETED") {
