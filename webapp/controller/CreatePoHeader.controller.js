@@ -3,8 +3,12 @@ sap.ui.define([
     "sap/m/MessageToast",
     "sap/m/MessageBox",
     "sap/ui/core/ValueState",
-    "sap/ui/core/routing/History"
-], function (Controller, MessageToast, MessageBox, ValueState, History) {
+    "sap/ui/core/routing/History",
+    "sap/ui/core/Fragment",
+    "sap/ui/model/Filter",
+    "sap/ui/model/FilterOperator"
+
+], function (Controller, MessageToast, MessageBox, ValueState, History, Fragment, Filter, FilterOperator) {
     "use strict";
 
     return Controller.extend("purchaseordertracking.zpomanagementapp.controller.CreatePoHeader", {
@@ -13,7 +17,7 @@ sap.ui.define([
             this.byId("docDatePicker").setDateValue(new Date());
         },
 
-        
+
         onInputChange: function (oEvent) {
             var oInput = oEvent.getSource();
             if (oInput.getValue().trim()) {
@@ -40,7 +44,7 @@ sap.ui.define([
                 TotalAmount: "0.00"
             };
 
-       
+
             if (!this._validateInputs(oPayload)) {
                 MessageBox.error("Please correct the highlighted errors before saving.");
                 return;
@@ -67,7 +71,7 @@ sap.ui.define([
                         var oResponse = JSON.parse(oError.responseText);
                         sErrorMsg = oResponse.error.message.value;
                     } catch (e) {
-                        
+
                     }
 
                     MessageBox.error(sErrorMsg);
@@ -78,7 +82,7 @@ sap.ui.define([
         _validateInputs: function (oPayload) {
             var bValid = true;
 
-           
+
             var aRequiredFields = [
                 { id: "poIdInput", val: oPayload.PoId, msg: "PO ID is required." },
                 { id: "vendorInput", val: oPayload.VendorId, msg: "Vendor ID is required." },
@@ -100,7 +104,7 @@ sap.ui.define([
                 }
             }, this);
 
-           
+
             var oDatePicker = this.byId("docDatePicker");
             if (!oDatePicker.getDateValue()) {
                 oDatePicker.setValueState(ValueState.Error);
@@ -113,12 +117,77 @@ sap.ui.define([
             return bValid;
         },
 
-        onVendorValueHelp: function () {
-            MessageToast.show("Vendor Search Help opened.");
+        onVendorValueHelp: function (oEvent) {
+            var oView = this.getView();
+            this._oVendorInput = oEvent.getSource(); 
+
+            if (!this._oVendorValueHelpDialog) {
+                Fragment.load({
+                    id: oView.getId(),
+                    name: "purchaseordertracking.zpomanagementapp.view.fragments.VendorValueHelpDialog",
+                    controller: this
+                }).then(function (oDialog) {
+                    this._oVendorValueHelpDialog = oDialog;
+                    oView.addDependent(this._oVendorValueHelpDialog);
+                    this._oVendorValueHelpDialog.open();
+                }.bind(this));
+            } else {
+                this._oVendorValueHelpDialog.open();
+            }
+        },
+
+        onVendorValueHelpSearch: function (oEvent) {
+            var sValue = oEvent.getParameter("value");
+            var oFilter = new Filter([
+                new Filter("VendorId", FilterOperator.Contains, sValue),
+                new Filter("VendorName", FilterOperator.Contains, sValue)
+            ], false);
+
+            var oBinding = oEvent.getSource().getBinding("items");
+            oBinding.filter(sValue ? [oFilter] : []);
+        },
+
+        onVendorValueHelpConfirm: function (oEvent) {
+            var oSelectedItem = oEvent.getParameter("selectedItem");
+            if (oSelectedItem && this._oVendorInput) {
+                var sVendorId = oSelectedItem.getDescription();
+
+                this._oVendorInput.setValue(sVendorId);
+                this._oVendorInput.setValueState("None"); 
+            }
+        },
+
+        onVendorValueHelpClose: function (oEvent) {
+            var oBinding = oEvent.getSource().getBinding("items");
+            if (oBinding) {
+                oBinding.filter([]); 
+            }
         },
 
         onCancel: function () {
+            this._resetHeaderValidation();
             this.onNavBack();
+        },
+
+        _resetHeaderValidation: function () {
+            // Array of Input IDs in the Header Information section
+            var aHeaderInputIds = [
+                "poIdInput",
+                "vendorInput",
+                "purchOrgInput",
+                "purchGroupInput",
+                "companyCodeInput",
+                "documentDateInput",
+                "currencySelect"
+            ];
+
+            aHeaderInputIds.forEach(function (sId) {
+                var oControl = this.byId(sId);
+                if (oControl && oControl.setValueState) {
+                    oControl.setValueState("None");
+                    oControl.setValueStateText("");
+                }
+            }, this);
         },
 
         onNavBack: function () {
