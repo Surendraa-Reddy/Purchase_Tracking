@@ -62,8 +62,44 @@ sap.ui.define([
         },
 
         onCloseCreateDialog: function () {
+            this._resetCreateDialogForm();
             if (this._oCreateDialog) {
                 this._oCreateDialog.close();
+            }
+        },
+
+        _resetCreateDialogForm: function () {
+            
+            var aInputIds = [
+                "inputItemNo",
+                "inputMaterial",
+                "inputMaterialDesc",
+                "inputPlant",
+                "inputStorageLoc",
+                "inputQuantity",
+                "inputUnit",
+                "inputNetPrice",
+                "inputCurrency"
+            ];
+
+         
+            aInputIds.forEach(function (sId) {
+                var oControl = this.byId(sId);
+                if (oControl) {
+                    oControl.setValue("");
+                    oControl.setValueState("None");
+                    if (oControl.setValueStateText) {
+                        oControl.setValueStateText("");
+                    }
+                }
+            }, this);
+
+            var oDatePicker = this.byId("inputDeliveryDate");
+            if (oDatePicker) {
+                oDatePicker.setValue("");
+                oDatePicker.setDateValue(null);
+                oDatePicker.setValueState("None");
+                oDatePicker.setValueStateText("");
             }
         },
 
@@ -271,7 +307,7 @@ sap.ui.define([
 
         onSaveEditPoItem: function () {
             var oModel = this.getView().getModel();
-            var oTable = this.byId("poItemsTable"); // Reference table instance safely here
+            var oTable = this.byId("poItemsTable");
 
             var oDatePicker = this.byId("editDeliveryDate");
             var oDateValue = oDatePicker ? oDatePicker.getDateValue() : null;
